@@ -1,6 +1,6 @@
-# LeadPilot AI
+# LeadHijack 
 
-AI-powered lead qualification platform.
+Steal Attention. Win Customers.
 
 ## Features
 
