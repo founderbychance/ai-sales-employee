@@ -1,4 +1,4 @@
-# LeadHijack 
+# LeadHijack AI
 
 Steal Attention. Win Customers.
 

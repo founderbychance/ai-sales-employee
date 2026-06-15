@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LeadHijack",
+  title: "LeadHijack AI",
   description: "Steal Attention. Win Customers.",
 };
 
