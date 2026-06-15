@@ -1,0 +1,73 @@
+"use client";
+
+import { useState } from "react";
+
+export default function LeadForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [company, setCompany] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const response = await fetch("/api/leads", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        name,
+        email,
+        company,
+      }),
+    });
+
+    const data = await response.json();
+
+    alert(data.message);
+
+    setName("");
+    setEmail("");
+    setCompany("");
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4 w-full max-w-md"
+    >
+      <input
+        className="border p-3 rounded"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
+
+      <input
+        className="border p-3 rounded"
+        placeholder="Email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+
+      <input
+        className="border p-3 rounded"
+        placeholder="Company"
+        value={company}
+        onChange={(e) => setCompany(e.target.value)}
+      />
+
+      <button
+        className="bg-black text-white p-3 rounded"
+        type="submit"
+      >
+        Submit
+      </button>
+    </form>
+  );
+}
