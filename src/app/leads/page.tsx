@@ -2,24 +2,32 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 import { supabase } from "@/lib/supabase";
 
 export default function LeadsPage() {
 
+  const { userId } = useAuth();
+
   const [leads, setLeads] = useState<any[]>([]);
 
   const [search, setSearch] = useState("");
+
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
 
     async function fetchLeads() {
 
+      if (!userId) return;
+
       const { data } = await supabase
 
         .from("leads")
 
         .select("*")
+
+        .eq("user_id", userId)
 
         .order("created_at", {
 
@@ -33,51 +41,51 @@ export default function LeadsPage() {
 
     fetchLeads();
 
-  }, []);
+  }, [userId]);
 
   const filteredLeads = leads.filter((lead) => {
 
-  const matchesSearch =
+    const matchesSearch =
 
-    lead.name
-      ?.toLowerCase()
-      .includes(search.toLowerCase())
+      lead.name
+        ?.toLowerCase()
+        .includes(search.toLowerCase())
 
-    ||
+      ||
 
-    lead.company
-      ?.toLowerCase()
-      .includes(search.toLowerCase());
+      lead.company
+        ?.toLowerCase()
+        .includes(search.toLowerCase());
 
-  if (!matchesSearch) {
+    if (!matchesSearch) {
 
-    return false;
+      return false;
 
-  }
+    }
 
-  if (filter === "high") {
+    if (filter === "high") {
 
-    return lead.ai_score >= 7;
+      return lead.ai_score >= 7;
 
-  }
+    }
 
-  if (filter === "medium") {
+    if (filter === "medium") {
 
-    return lead.ai_score >= 4
+      return lead.ai_score >= 4
 
-      && lead.ai_score <= 6;
+        && lead.ai_score <= 6;
 
-  }
+    }
 
-  if (filter === "low") {
+    if (filter === "low") {
 
-    return lead.ai_score <= 3;
+      return lead.ai_score <= 3;
 
-  }
+    }
 
-  return true;
+    return true;
 
-});
+  });
 
   return (
 
@@ -85,25 +93,25 @@ export default function LeadsPage() {
 
       <div className="flex justify-between items-center mb-10">
 
-  <h1 className="text-4xl font-bold">
+        <h1 className="text-4xl font-bold">
 
-    Leads
+          Leads
 
-  </h1>
+        </h1>
 
-  <a
+        <a
 
-    href="/api/export"
+          href="/api/export"
 
-    className="border px-4 py-2 rounded hover:bg-gray-100"
+          className="border px-4 py-2 rounded hover:bg-gray-100"
 
-  >
+        >
 
-    ⬇️ Export CSV
+          ⬇️ Export CSV
 
-  </a>
+        </a>
 
-</div>
+      </div>
 
       <input
 
@@ -123,55 +131,55 @@ export default function LeadsPage() {
 
       <div className="flex gap-3 mb-8">
 
-  <button
+        <button
 
-    className="border px-4 py-2 rounded"
+          className="border px-4 py-2 rounded"
 
-    onClick={() => setFilter("all")}
+          onClick={() => setFilter("all")}
 
-  >
+        >
 
-    All
+          All
 
-  </button>
+        </button>
 
-  <button
+        <button
 
-    className="border px-4 py-2 rounded"
+          className="border px-4 py-2 rounded"
 
-    onClick={() => setFilter("high")}
+          onClick={() => setFilter("high")}
 
-  >
+        >
 
-    ⭐ High
+          ⭐ High
 
-  </button>
+        </button>
 
-  <button
+        <button
 
-    className="border px-4 py-2 rounded"
+          className="border px-4 py-2 rounded"
 
-    onClick={() => setFilter("medium")}
+          onClick={() => setFilter("medium")}
 
-  >
+        >
 
-    🟡 Medium
+          🟡 Medium
 
-  </button>
+        </button>
 
-  <button
+        <button
 
-    className="border px-4 py-2 rounded"
+          className="border px-4 py-2 rounded"
 
-    onClick={() => setFilter("low")}
+          onClick={() => setFilter("low")}
 
-  >
+        >
 
-    🔴 Low
+          🔴 Low
 
-  </button>
+        </button>
 
-</div>
+      </div>
 
       <div className="space-y-4">
 
@@ -197,29 +205,13 @@ export default function LeadsPage() {
 
               </h2>
 
-              <p>
+              <p>📧 {lead.email}</p>
 
-📧 {lead.email}
+              <p>🏢 {lead.company}</p>
 
-              </p>
+              <p>🟢 Status: {lead.status}</p>
 
-              <p>
-
-🏢 {lead.company}
-
-              </p>
-
-              <p>
-
-🟢 Status: {lead.status}
-
-              </p>
-
-              <p>
-
-🤖 AI Score: {lead.ai_score}/10
-
-              </p>
+              <p>🤖 AI Score: {lead.ai_score}/10</p>
 
             </div>
 

@@ -1,3 +1,5 @@
+import { resend } from "@/lib/resend";
+import { auth } from "@clerk/nextjs/server";
 import { gemini } from "@/lib/gemini";
 import { supabase } from "@/lib/supabase";
 
@@ -6,6 +8,28 @@ export async function POST(req: Request) {
   try {
 
     const body = await req.json();
+
+    const { userId } = await auth();
+
+if (!userId) {
+
+  return Response.json(
+
+    {
+
+      message: "Unauthorized",
+
+    },
+
+    {
+
+      status: 401,
+
+    }
+
+  );
+
+}
 
     let aiScore = 5;
 
@@ -70,21 +94,22 @@ Return ONLY valid JSON.
       .from("leads")
 
       .insert([
-        {
-          name: body.name,
+  {
+    user_id: userId,
 
-          email: body.email,
+    name: body.name,
 
-          company: body.company,
+    email: body.email,
 
-          status: "new",
+    company: body.company,
 
-          ai_score: aiScore,
+    status: "new",
 
-          ai_summary: aiSummary,
-        },
-      ])
+    ai_score: aiScore,
 
+    ai_summary: aiSummary,
+  },
+])
       .select();
 
     if (error) {
@@ -99,6 +124,46 @@ Return ONLY valid JSON.
       );
 
     }
+
+    try {
+
+  await resend.emails.send({
+
+    from: "onboarding@resend.dev",
+
+    to: ["founderbychance@gmail.com"],
+
+    subject: "🚀 New Lead Received",
+
+    html: `
+
+      <h2>New Lead</h2>
+
+      <p><strong>Name:</strong> ${body.name}</p>
+
+      <p><strong>Company:</strong> ${body.company}</p>
+
+      <p><strong>Email:</strong> ${body.email}</p>
+
+      <p><strong>AI Score:</strong> ${aiScore}/10</p>
+
+      <p><strong>AI Summary:</strong> ${aiSummary}</p>
+
+    `,
+
+  });
+
+} catch (error) {
+
+  console.log(
+
+    "Email error:",
+
+    error
+
+  );
+
+}
 
     return Response.json({
 

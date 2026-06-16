@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LeadHijack AI",
+  title: "LeadsHijack AI",
   description: "AI-powered lead qualification platform",
 };
 
@@ -15,47 +16,51 @@ export default function RootLayout({
 
   return (
 
-    <html lang="en">
+    <ClerkProvider>
 
-      <body>
+      <html lang="en">
 
-        <nav className="border-b p-5">
+        <body>
 
-          <div className="flex gap-8 items-center">
+          <nav className="border-b p-5">
 
-            <h1 className="font-bold text-2xl">
+            <div className="flex gap-8 items-center">
 
-              LeadsHijack AI
+              <h1 className="font-bold text-2xl">
 
-            </h1>
+                LeadsHijack AI
 
-            <Link href="/">
+              </h1>
 
-              🏠 Home
+              <Link href="/">
 
-            </Link>
+                🏠 Home
 
-            <Link href="/dashboard">
+              </Link>
 
-              📊 Dashboard
+              <Link href="/dashboard">
 
-            </Link>
+                📊 Dashboard
 
-            <Link href="/leads">
+              </Link>
 
-              👥 Leads
+              <Link href="/leads">
 
-            </Link>
+                👥 Leads
 
-          </div>
+              </Link>
 
-        </nav>
+            </div>
 
-        {children}
+          </nav>
 
-      </body>
+          {children}
 
-    </html>
+        </body>
+
+      </html>
+
+    </ClerkProvider>
 
   );
 
