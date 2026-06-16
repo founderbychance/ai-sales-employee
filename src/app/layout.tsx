@@ -1,20 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "LeadHijack AI",
-  description: "Steal Attention. Win Customers.",
+  title: "LeadPilot AI",
+  description: "AI-powered lead qualification platform",
 };
 
 export default function RootLayout({
@@ -22,12 +12,51 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+
+    <html lang="en">
+
+      <body>
+
+        <nav className="border-b p-5">
+
+          <div className="flex gap-8 items-center">
+
+            <h1 className="font-bold text-2xl">
+
+              LeadPilot AI
+
+            </h1>
+
+            <Link href="/">
+
+              🏠 Home
+
+            </Link>
+
+            <Link href="/dashboard">
+
+              📊 Dashboard
+
+            </Link>
+
+            <Link href="/leads">
+
+              👥 Leads
+
+            </Link>
+
+          </div>
+
+        </nav>
+
+        {children}
+
+      </body>
+
     </html>
+
   );
+
 }
