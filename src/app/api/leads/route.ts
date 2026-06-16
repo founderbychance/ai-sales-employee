@@ -187,31 +187,35 @@ Return ONLY valid JSON.
 
     try {
 
-  await resend.emails.send({
+  if (resend) {
 
-    from: "onboarding@resend.dev",
+    await resend.emails.send({
 
-    to: ["founderbychance@gmail.com"],
+      from: "onboarding@resend.dev",
 
-    subject: "🚀 New Lead Received",
+      to: ["founderbychance@gmail.com"],
 
-    html: `
+      subject: "🚀 New Lead Received",
 
-      <h2>New Lead</h2>
+      html: `
 
-      <p><strong>Name:</strong> ${body.name}</p>
+        <h2>New Lead</h2>
 
-      <p><strong>Company:</strong> ${body.company}</p>
+        <p><strong>Name:</strong> ${body.name}</p>
 
-      <p><strong>Email:</strong> ${body.email}</p>
+        <p><strong>Company:</strong> ${body.company}</p>
 
-      <p><strong>AI Score:</strong> ${aiScore}/10</p>
+        <p><strong>Email:</strong> ${body.email}</p>
 
-      <p><strong>AI Summary:</strong> ${aiSummary}</p>
+        <p><strong>AI Score:</strong> ${aiScore}/10</p>
 
-    `,
+        <p><strong>AI Summary:</strong> ${aiSummary}</p>
 
-  });
+      `,
+
+    });
+
+  }
 
 } catch (error) {
 
@@ -224,7 +228,6 @@ Return ONLY valid JSON.
   );
 
 }
-
     return Response.json({
 
       message:
