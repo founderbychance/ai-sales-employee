@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 
 export default async function Dashboard() {
+
   const { data } = await supabase
     .from("leads")
     .select("*");
@@ -15,63 +16,84 @@ export default async function Dashboard() {
   const averageScore =
     data && data.length
       ? Math.round(
+
           data.reduce(
+
             (sum, lead) =>
+
               sum + (lead.ai_score || 0),
+
             0
+
           ) / data.length
+
         )
       : 0;
 
   return (
+
     <main className="min-h-screen p-10">
 
-      <h1 className="text-4xl font-bold">
+      <h1 className="text-4xl font-bold mb-10">
 
-        Dashboard
+        📊 Dashboard
 
       </h1>
 
-      <div className="grid grid-cols-3 gap-6 mt-10">
+      <div className="grid md:grid-cols-3 gap-6">
 
-        <div className="border p-6 rounded-xl">
+        <div className="border rounded-xl p-8 shadow-sm">
 
-          <h2>Total Leads</h2>
+          <p className="text-gray-500">
 
-          <p className="text-4xl">
+            Total Leads
+
+          </p>
+
+          <h2 className="text-5xl font-bold mt-4">
 
             {totalLeads}
 
-          </p>
+          </h2>
 
         </div>
 
-        <div className="border p-6 rounded-xl">
+        <div className="border rounded-xl p-8 shadow-sm">
 
-          <h2>New Leads</h2>
+          <p className="text-gray-500">
 
-          <p className="text-4xl">
+            New Leads
+
+          </p>
+
+          <h2 className="text-5xl font-bold mt-4">
 
             {newLeads}
 
-          </p>
+          </h2>
 
         </div>
 
-        <div className="border p-6 rounded-xl">
+        <div className="border rounded-xl p-8 shadow-sm">
 
-          <h2>Average AI Score</h2>
+          <p className="text-gray-500">
 
-          <p className="text-4xl">
-
-            {averageScore}
+            Average AI Score
 
           </p>
+
+          <h2 className="text-5xl font-bold mt-4">
+
+            {averageScore}/10
+
+          </h2>
 
         </div>
 
       </div>
 
     </main>
+
   );
+
 }
