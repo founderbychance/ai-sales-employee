@@ -6,29 +6,31 @@ export default async function Dashboard() {
     .from("leads")
     .select("*");
 
-  const totalLeads = data?.length ?? 0;
+  const leads = data || [];
 
-  const newLeads =
-    data?.filter(
-      (lead) => lead.status === "new"
-    ).length ?? 0;
+  const totalLeads = leads.length;
 
-  const averageScore =
-    data && data.length
-      ? Math.round(
+  const newLeads = leads.filter(
+    (lead) => lead.status === "new"
+  ).length;
 
-          data.reduce(
+  const averageScore = totalLeads
+    ? Math.round(
+        leads.reduce(
+          (sum, lead) =>
+            sum + (lead.ai_score || 0),
+          0
+        ) / totalLeads
+      )
+    : 0;
 
-            (sum, lead) =>
-
-              sum + (lead.ai_score || 0),
-
-            0
-
-          ) / data.length
-
-        )
-      : 0;
+  const bestLead = leads.length
+    ? leads.reduce((best, current) =>
+        current.ai_score > best.ai_score
+          ? current
+          : best
+      )
+    : null;
 
   return (
 
@@ -40,7 +42,7 @@ export default async function Dashboard() {
 
       </h1>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-4 gap-6">
 
         <div className="border rounded-xl p-8 shadow-sm">
 
@@ -85,6 +87,24 @@ export default async function Dashboard() {
           <h2 className="text-5xl font-bold mt-4">
 
             {averageScore}/10
+
+          </h2>
+
+        </div>
+
+        <div className="border rounded-xl p-8 shadow-sm">
+
+          <p className="text-gray-500">
+
+            🥇 Best Lead
+
+          </p>
+
+          <h2 className="text-2xl font-bold mt-4">
+
+            {bestLead
+              ? bestLead.name
+              : "No Leads"}
 
           </h2>
 
