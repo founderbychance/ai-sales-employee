@@ -1,7 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isPublicRoute = createRouteMatcher([
+
   "/",
+
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -18,7 +20,9 @@ export const config = {
 
   matcher: [
 
-    "/((?!_next|.*\\..*).*)",
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpg|jpeg|png|gif|svg|ico|ttf|woff|woff2)).*)",
+
+    "/(api|trpc)(.*)",
 
   ],
 
