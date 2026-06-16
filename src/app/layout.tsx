@@ -3,7 +3,7 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LeadPilot AI",
+  title: "LeadHijack AI",
   description: "AI-powered lead qualification platform",
 };
 
@@ -25,7 +25,7 @@ export default function RootLayout({
 
             <h1 className="font-bold text-2xl">
 
-              LeadPilot AI
+              LeadsHijack AI
 
             </h1>
 

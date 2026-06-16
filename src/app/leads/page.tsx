@@ -9,6 +9,7 @@ export default function LeadsPage() {
   const [leads, setLeads] = useState<any[]>([]);
 
   const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
 
@@ -34,21 +35,49 @@ export default function LeadsPage() {
 
   }, []);
 
-  const filteredLeads =
+  const filteredLeads = leads.filter((lead) => {
 
-    leads.filter((lead) =>
+  const matchesSearch =
 
-      lead.name
-        ?.toLowerCase()
-        .includes(search.toLowerCase())
+    lead.name
+      ?.toLowerCase()
+      .includes(search.toLowerCase())
 
-      ||
+    ||
 
-      lead.company
-        ?.toLowerCase()
-        .includes(search.toLowerCase())
+    lead.company
+      ?.toLowerCase()
+      .includes(search.toLowerCase());
 
-    );
+  if (!matchesSearch) {
+
+    return false;
+
+  }
+
+  if (filter === "high") {
+
+    return lead.ai_score >= 7;
+
+  }
+
+  if (filter === "medium") {
+
+    return lead.ai_score >= 4
+
+      && lead.ai_score <= 6;
+
+  }
+
+  if (filter === "low") {
+
+    return lead.ai_score <= 3;
+
+  }
+
+  return true;
+
+});
 
   return (
 
@@ -91,6 +120,58 @@ export default function LeadsPage() {
         }
 
       />
+
+      <div className="flex gap-3 mb-8">
+
+  <button
+
+    className="border px-4 py-2 rounded"
+
+    onClick={() => setFilter("all")}
+
+  >
+
+    All
+
+  </button>
+
+  <button
+
+    className="border px-4 py-2 rounded"
+
+    onClick={() => setFilter("high")}
+
+  >
+
+    ⭐ High
+
+  </button>
+
+  <button
+
+    className="border px-4 py-2 rounded"
+
+    onClick={() => setFilter("medium")}
+
+  >
+
+    🟡 Medium
+
+  </button>
+
+  <button
+
+    className="border px-4 py-2 rounded"
+
+    onClick={() => setFilter("low")}
+
+  >
+
+    🔴 Low
+
+  </button>
+
+</div>
 
       <div className="space-y-4">
 
