@@ -14,6 +14,8 @@ export default function LeadDetailsPage() {
 
   const [followUpNote, setFollowUpNote] = useState("");
 
+  const [notes, setNotes] = useState("");
+
   useEffect(() => {
 
     async function fetchLead() {
@@ -36,6 +38,10 @@ export default function LeadDetailsPage() {
 
       setFollowUpNote(
         data?.follow_up_note || ""
+      );
+
+      setNotes(
+        data?.notes || ""
       );
 
     }
@@ -70,43 +76,61 @@ export default function LeadDetailsPage() {
 
   }
 
- async function saveReminder() {
+  async function saveReminder() {
 
-  const { data, error } = await supabase
+    const { error } = await supabase
 
-    .from("leads")
+      .from("leads")
 
-    .update({
+      .update({
 
-      follow_up_date:
-        followUpDate,
+        follow_up_date:
+          followUpDate,
 
-      follow_up_note:
-        followUpNote,
+        follow_up_note:
+          followUpNote,
 
-    })
+      })
 
-    .eq("id", params.id)
+      .eq("id", params.id);
 
-    .select();
+    if (error) {
 
-  console.log("DATA:", data);
+      alert(error.message);
 
-  console.log("ERROR:", error);
+      return;
 
-  if (error) {
+    }
 
-    alert(error.message);
-
-    return;
+    alert("Reminder saved ✅");
 
   }
 
-  alert("Reminder saved ✅");
+  async function saveNotes() {
 
-window.location.reload();
+    const { error } = await supabase
 
-}
+      .from("leads")
+
+      .update({
+
+        notes,
+
+      })
+
+      .eq("id", params.id);
+
+    if (error) {
+
+      alert(error.message);
+
+      return;
+
+    }
+
+    alert("Notes saved ✅");
+
+  }
 
   if (!lead) {
 
@@ -181,10 +205,15 @@ window.location.reload();
           <div className="flex gap-3 flex-wrap">
 
             <button
+
               className="border px-4 py-2 rounded"
+
               onClick={() =>
+
                 updateStage("new")
+
               }
+
             >
 
               🟢 New
@@ -192,10 +221,15 @@ window.location.reload();
             </button>
 
             <button
+
               className="border px-4 py-2 rounded"
+
               onClick={() =>
+
                 updateStage("contacted")
+
               }
+
             >
 
               🟡 Contacted
@@ -203,10 +237,15 @@ window.location.reload();
             </button>
 
             <button
+
               className="border px-4 py-2 rounded"
+
               onClick={() =>
+
                 updateStage("qualified")
+
               }
+
             >
 
               🔵 Qualified
@@ -214,10 +253,15 @@ window.location.reload();
             </button>
 
             <button
+
               className="border px-4 py-2 rounded"
+
               onClick={() =>
+
                 updateStage("won")
+
               }
+
             >
 
               🟣 Won
@@ -225,10 +269,15 @@ window.location.reload();
             </button>
 
             <button
+
               className="border px-4 py-2 rounded"
+
               onClick={() =>
+
                 updateStage("lost")
+
               }
+
             >
 
               🔴 Lost
@@ -308,6 +357,48 @@ window.location.reload();
           >
 
             💾 Save Reminder
+
+          </button>
+
+        </div>
+
+        <div className="mt-10 space-y-4">
+
+          <h3 className="text-xl font-bold">
+
+            📝 Notes
+
+          </h3>
+
+          <textarea
+
+            className="border p-3 rounded w-full"
+
+            rows={5}
+
+            placeholder="Add notes..."
+
+            value={notes}
+
+            onChange={(e) =>
+
+              setNotes(
+                e.target.value
+              )
+
+            }
+
+          />
+
+          <button
+
+            className="border px-4 py-2 rounded"
+
+            onClick={saveNotes}
+
+          >
+
+            💾 Save Notes
 
           </button>
 

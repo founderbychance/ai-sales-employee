@@ -3,71 +3,163 @@
 import { useState } from "react";
 
 export default function LeadForm() {
+
   const [name, setName] = useState("");
+
   const [email, setEmail] = useState("");
+
   const [company, setCompany] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(
+    e: React.FormEvent
+  ) {
+
     e.preventDefault();
 
-    const response = await fetch("/api/leads", {
-      method: "POST",
+    const response = await fetch(
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+      "/api/leads",
 
-      body: JSON.stringify({
-        name,
-        email,
-        company,
-      }),
-    });
+      {
 
-    const data = await response.json();
+        method: "POST",
+
+        headers: {
+
+          "Content-Type":
+
+            "application/json",
+
+        },
+
+        body: JSON.stringify({
+
+          name,
+
+          email,
+
+          company,
+
+        }),
+
+      }
+
+    );
+
+    const data =
+
+      await response.json();
+
+    if (response.status === 403) {
+
+      const shouldUpgrade =
+
+        confirm(
+
+          "🚫 You have reached your free plan limit.\n\nGo to the Upgrade page?"
+
+        );
+
+      if (shouldUpgrade) {
+
+        window.location.href =
+
+          "/upgrade";
+
+      }
+
+      return;
+
+    }
 
     alert(data.message);
 
     setName("");
+
     setEmail("");
+
     setCompany("");
+
   }
 
   return (
+
     <form
+
       onSubmit={handleSubmit}
+
       className="flex flex-col gap-4 w-full max-w-md"
+
     >
+
       <input
+
         className="border p-3 rounded"
+
         placeholder="Name"
+
         value={name}
-        onChange={(e) => setName(e.target.value)}
+
+        onChange={(e) =>
+
+          setName(e.target.value)
+
+        }
+
         required
+
       />
 
       <input
+
         className="border p-3 rounded"
+
         placeholder="Email"
+
         type="email"
+
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+
+        onChange={(e) =>
+
+          setEmail(e.target.value)
+
+        }
+
         required
+
       />
 
       <input
+
         className="border p-3 rounded"
+
         placeholder="Company"
+
         value={company}
-        onChange={(e) => setCompany(e.target.value)}
+
+        onChange={(e) =>
+
+          setCompany(e.target.value)
+
+        }
+
       />
 
       <button
+
         className="bg-black text-white p-3 rounded"
+
         type="submit"
+
       >
+
         Submit
+
       </button>
+
     </form>
+
   );
+
 }

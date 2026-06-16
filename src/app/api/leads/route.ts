@@ -31,6 +31,66 @@ if (!userId) {
 
 }
 
+const startOfMonth = new Date();
+
+startOfMonth.setDate(1);
+
+startOfMonth.setHours(
+
+  0,
+
+  0,
+
+  0,
+
+  0
+
+);
+
+const { count } = await supabase
+
+  .from("leads")
+
+  .select("*", {
+
+    count: "exact",
+
+    head: true,
+
+  })
+
+  .eq("user_id", userId)
+
+  .gte(
+
+    "created_at",
+
+    startOfMonth.toISOString()
+
+  );
+
+if ((count || 0) >= 5) {
+
+  return Response.json(
+
+    {
+
+      message:
+
+        "Free plan limit reached. Upgrade to Pro 🚀",
+
+    },
+
+    {
+
+      status: 403,
+
+    }
+
+  );
+
+}
+
     let aiScore = 5;
 
     let aiSummary = "No summary available.";

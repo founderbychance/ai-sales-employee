@@ -20,11 +20,11 @@ export default function RootLayout({
 
       <html lang="en">
 
-        <body>
+        <body className="bg-white text-black">
 
           <nav className="border-b p-5">
 
-            <div className="flex gap-8 items-center">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:justify-between md:items-center gap-4">
 
               <h1 className="font-bold text-2xl">
 
@@ -32,23 +32,45 @@ export default function RootLayout({
 
               </h1>
 
-              <Link href="/">
+              <div className="flex flex-wrap gap-4 md:gap-8">
 
-                🏠 Home
+                <Link
+                  href="/"
+                  className="hover:underline"
+                >
 
-              </Link>
+                  🏠 Home
 
-              <Link href="/dashboard">
+                </Link>
 
-                📊 Dashboard
+                <Link
+                  href="/dashboard"
+                  className="hover:underline"
+                >
 
-              </Link>
+                  📊 Dashboard
 
-              <Link href="/leads">
+                </Link>
 
-                👥 Leads
+                <Link
+                  href="/leads"
+                  className="hover:underline"
+                >
 
-              </Link>
+                  👥 Leads
+
+                </Link>
+
+                <Link
+                  href="/kanban"
+                  className="hover:underline"
+                >
+
+                  📋 Kanban
+
+                </Link>
+
+              </div>
 
             </div>
 
