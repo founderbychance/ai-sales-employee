@@ -1,26 +1,120 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-export default async function LeadDetailsPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function LeadDetailsPage() {
 
-  const { id } = await params;
+  const params = useParams();
 
-  const { data } = await supabase
+  const [lead, setLead] = useState<any>(null);
+
+  const [followUpDate, setFollowUpDate] = useState("");
+
+  const [followUpNote, setFollowUpNote] = useState("");
+
+  useEffect(() => {
+
+    async function fetchLead() {
+
+      const { data } = await supabase
+
+        .from("leads")
+
+        .select("*")
+
+        .eq("id", params.id)
+
+        .single();
+
+      setLead(data);
+
+      setFollowUpDate(
+        data?.follow_up_date || ""
+      );
+
+      setFollowUpNote(
+        data?.follow_up_note || ""
+      );
+
+    }
+
+    fetchLead();
+
+  }, [params.id]);
+
+  async function updateStage(
+    stage: string
+  ) {
+
+    await supabase
+
+      .from("leads")
+
+      .update({
+
+        stage,
+
+      })
+
+      .eq("id", params.id);
+
+    setLead({
+
+      ...lead,
+
+      stage,
+
+    });
+
+  }
+
+ async function saveReminder() {
+
+  const { data, error } = await supabase
+
     .from("leads")
-    .select("*")
-    .eq("id", id)
-    .single();
 
-  if (!data) {
+    .update({
+
+      follow_up_date:
+        followUpDate,
+
+      follow_up_note:
+        followUpNote,
+
+    })
+
+    .eq("id", params.id)
+
+    .select();
+
+  console.log("DATA:", data);
+
+  console.log("ERROR:", error);
+
+  if (error) {
+
+    alert(error.message);
+
+    return;
+
+  }
+
+  alert("Reminder saved ✅");
+
+window.location.reload();
+
+}
+
+  if (!lead) {
 
     return (
 
       <main className="p-10">
 
-        Lead not found
+        Loading...
 
       </main>
 
@@ -42,37 +136,187 @@ export default async function LeadDetailsPage({
 
         <h2 className="text-2xl font-bold">
 
-          {data.name}
+          {lead.name}
 
         </h2>
 
         <p>
 
-📧 {data.email}
+📧 {lead.email}
 
         </p>
 
         <p>
 
-🏢 {data.company}
+🏢 {lead.company}
 
         </p>
 
         <p>
 
-🟢 Status: {data.status}
+🟢 Status: {lead.status}
 
         </p>
 
         <p>
 
-🤖 AI Score: {data.ai_score}/10
+🤖 AI Score: {lead.ai_score}/10
 
         </p>
+
+        <p>
+
+📝 {lead.ai_summary}
+
+        </p>
+
+        <div className="pt-6">
+
+          <p className="mb-3 font-bold">
+
+            Pipeline Stage
+
+          </p>
+
+          <div className="flex gap-3 flex-wrap">
+
+            <button
+              className="border px-4 py-2 rounded"
+              onClick={() =>
+                updateStage("new")
+              }
+            >
+
+              🟢 New
+
+            </button>
+
+            <button
+              className="border px-4 py-2 rounded"
+              onClick={() =>
+                updateStage("contacted")
+              }
+            >
+
+              🟡 Contacted
+
+            </button>
+
+            <button
+              className="border px-4 py-2 rounded"
+              onClick={() =>
+                updateStage("qualified")
+              }
+            >
+
+              🔵 Qualified
+
+            </button>
+
+            <button
+              className="border px-4 py-2 rounded"
+              onClick={() =>
+                updateStage("won")
+              }
+            >
+
+              🟣 Won
+
+            </button>
+
+            <button
+              className="border px-4 py-2 rounded"
+              onClick={() =>
+                updateStage("lost")
+              }
+            >
+
+              🔴 Lost
+
+            </button>
+
+          </div>
+
+          <p className="mt-4">
+
+            Current Stage:
+
+            <strong>
+
+              {" "}
+
+              {lead.stage}
+
+            </strong>
+
+          </p>
+
+        </div>
+
+        <div className="mt-10 space-y-4">
+
+          <h3 className="text-xl font-bold">
+
+            📅 Follow-up Reminder
+
+          </h3>
+
+          <input
+
+            type="date"
+
+            className="border p-3 rounded w-full"
+
+            value={followUpDate}
+
+            onChange={(e) =>
+
+              setFollowUpDate(
+                e.target.value
+              )
+
+            }
+
+          />
+
+          <textarea
+
+            className="border p-3 rounded w-full"
+
+            rows={4}
+
+            placeholder="Reminder note..."
+
+            value={followUpNote}
+
+            onChange={(e) =>
+
+              setFollowUpNote(
+                e.target.value
+              )
+
+            }
+
+          />
+
+          <button
+
+            className="border px-4 py-2 rounded"
+
+            onClick={saveReminder}
+
+          >
+
+            💾 Save Reminder
+
+          </button>
+
+        </div>
 
       </div>
 
     </main>
 
   );
+
 }
