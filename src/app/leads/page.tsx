@@ -54,11 +54,27 @@ export default function LeadsPage() {
 
     <main className="min-h-screen p-10">
 
-      <h1 className="text-4xl font-bold mb-10">
+      <div className="flex justify-between items-center mb-10">
 
-        Leads
+  <h1 className="text-4xl font-bold">
 
-      </h1>
+    Leads
+
+  </h1>
+
+  <a
+
+    href="/api/export"
+
+    className="border px-4 py-2 rounded hover:bg-gray-100"
+
+  >
+
+    ⬇️ Export CSV
+
+  </a>
+
+</div>
 
       <input
 
