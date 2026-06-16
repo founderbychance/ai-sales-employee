@@ -1,3 +1,4 @@
+import LeadsChart from "@/components/LeadsChart";
 import { supabase } from "@/lib/supabase";
 
 export default async function Dashboard() {
@@ -107,6 +108,18 @@ export default async function Dashboard() {
               : "No Leads"}
 
           </h2>
+
+          <div className="mt-10">
+
+  <h2 className="text-2xl font-bold mb-6">
+
+    📈 AI Scores
+
+  </h2>
+
+  <LeadsChart data={leads} />
+
+</div>
 
         </div>
 
