@@ -4,6 +4,22 @@ export async function POST() {
 
   try {
 
+    console.log(
+
+      "KEY:",
+
+      process.env.RAZORPAY_KEY_ID
+
+    );
+
+    console.log(
+
+      "SECRET EXISTS:",
+
+      !!process.env.RAZORPAY_KEY_SECRET
+
+    );
+
     const razorpay = new Razorpay({
 
       key_id:
@@ -32,9 +48,15 @@ export async function POST() {
 
   }
 
-  catch (error) {
+  catch (error: any) {
 
-    console.log(error);
+    console.log(
+
+      "RAZORPAY ERROR:",
+
+      error
+
+    );
 
     return Response.json(
 
@@ -42,7 +64,7 @@ export async function POST() {
 
         message:
 
-          "Failed to create order",
+          error.message,
 
       },
 
