@@ -1,3 +1,4 @@
+import Script from "next/script";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -21,6 +22,12 @@ export default function RootLayout({
       <html lang="en">
 
         <body className="bg-white text-black">
+
+          <Script
+
+              src="https://checkout.razorpay.com/v1/checkout.js"
+
+          />
 
           <nav className="border-b p-5">
 
@@ -67,6 +74,24 @@ export default function RootLayout({
                 >
 
                   📋 Kanban
+
+                </Link>
+
+                <Link href="/admin">
+
+                  🛠️ Admin
+
+                </Link>
+
+                <Link href="/settings">
+
+                  ⚙️ Settings
+
+                </Link>
+
+                <Link href="/billing">
+
+                  💳 Billing
 
                 </Link>
 

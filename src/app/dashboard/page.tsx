@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+
 import LeadsChart from "@/components/LeadsChart";
 
 export default async function Dashboard() {
@@ -12,6 +13,16 @@ export default async function Dashboard() {
   const leads = data || [];
 
   const totalLeads = leads.length;
+
+  const leadLimit = 5;
+
+  const remainingLeads = Math.max(
+
+    0,
+
+    leadLimit - totalLeads
+
+  );
 
   const newLeads = leads.filter(
 
@@ -43,21 +54,29 @@ export default async function Dashboard() {
 
   ).length;
 
-  const recentLeads = leads
+  const recentLeads = [...leads]
 
-  .sort(
+    .sort(
 
-    (a, b) =>
+      (a, b) =>
 
-      new Date(b.created_at).getTime()
+        new Date(
 
-      -
+          b.created_at
 
-      new Date(a.created_at).getTime()
+        ).getTime()
 
-  )
+        -
 
-  .slice(0, 5);
+        new Date(
+
+          a.created_at
+
+        ).getTime()
+
+    )
+
+    .slice(0, 5);
 
   const averageScore = totalLeads
 
@@ -67,7 +86,9 @@ export default async function Dashboard() {
 
           (sum, lead) =>
 
-            sum + (lead.ai_score || 0),
+            sum +
+
+            (lead.ai_score || 0),
 
           0
 
@@ -149,6 +170,56 @@ export default async function Dashboard() {
 
       </div>
 
+      {/* Usage Counter */}
+
+      <div className="border rounded-xl p-8 mb-8">
+
+        <div className="flex justify-between items-center">
+
+          <div>
+
+            <h2 className="text-2xl font-bold">
+
+              📦 Free Plan
+
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+
+              {totalLeads} / {leadLimit}
+
+              {" "}leads used
+
+            </p>
+
+            <p className="mt-2">
+
+              {remainingLeads}
+
+              {" "}leads remaining
+
+            </p>
+
+          </div>
+
+          <a
+
+            href="/upgrade"
+
+            className="border px-6 py-3 rounded"
+
+          >
+
+            🚀 Upgrade
+
+          </a>
+
+        </div>
+
+      </div>
+
+      {/* Main Stats */}
+
       <div className="grid md:grid-cols-4 gap-6">
 
         <div className="border rounded-xl p-8 shadow">
@@ -225,6 +296,8 @@ export default async function Dashboard() {
 
       </div>
 
+      {/* Pipeline */}
+
       <div className="grid md:grid-cols-4 gap-6 mt-8">
 
         <div className="border rounded-xl p-6">
@@ -293,67 +366,73 @@ export default async function Dashboard() {
 
       </div>
 
+      {/* Chart + Recent Activity */}
+
       <div className="grid md:grid-cols-2 gap-8 mt-12">
 
-  <div className="border rounded-xl p-8">
+        <div className="border rounded-xl p-8">
 
-    <h2 className="text-2xl font-bold mb-6">
+          <h2 className="text-2xl font-bold mb-6">
 
-      📈 AI Scores
+            📈 AI Scores
 
-    </h2>
+          </h2>
 
-    <LeadsChart data={leads} />
-
-  </div>
-
-  <div className="border rounded-xl p-8">
-
-    <h2 className="text-2xl font-bold mb-6">
-
-      🕒 Recent Activity
-
-    </h2>
-
-    <div className="space-y-4">
-
-      {recentLeads.map((lead) => (
-
-        <div
-
-          key={lead.id}
-
-          className="border-b pb-3"
-
-        >
-
-          <p className="font-bold">
-
-            {lead.name}
-
-          </p>
-
-          <p>
-
-🏢 {lead.company}
-
-          </p>
-
-          <p>
-
-🟢 {lead.stage}
-
-          </p>
+          <LeadsChart data={leads} />
 
         </div>
 
-      ))}
+        <div className="border rounded-xl p-8">
 
-    </div>
+          <h2 className="text-2xl font-bold mb-6">
 
-  </div>
+            🕒 Recent Activity
 
-</div>
+          </h2>
+
+          <div className="space-y-4">
+
+            {recentLeads.map(
+
+              (lead) => (
+
+                <div
+
+                  key={lead.id}
+
+                  className="border-b pb-3"
+
+                >
+
+                  <p className="font-bold">
+
+                    {lead.name}
+
+                  </p>
+
+                  <p>
+
+                    🏢 {lead.company}
+
+                  </p>
+
+                  <p>
+
+                    🟢 {lead.stage}
+
+                  </p>
+
+                </div>
+
+              )
+
+            )}
+
+          </div>
+
+        </div>
+
+      </div>
 
     </main>
 

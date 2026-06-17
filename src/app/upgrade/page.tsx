@@ -1,24 +1,34 @@
+import Link from "next/link";
+
+import PayButton from "@/components/PayButton";
+
 export default function UpgradePage() {
 
   return (
 
     <main className="min-h-screen p-10">
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
 
-        <h1 className="text-5xl font-bold text-center mb-4">
+        <div className="text-center mb-16">
 
-          🚀 Upgrade Your Plan
+          <h1 className="text-5xl font-bold mb-4">
 
-        </h1>
+            🚀 Upgrade Your Plan
 
-        <p className="text-center text-gray-500 mb-12">
+          </h1>
 
-          Scale your AI Sales Employee.
+          <p className="text-xl text-gray-500">
 
-        </p>
+            Grow your business with AI-powered lead management.
+
+          </p>
+
+        </div>
 
         <div className="grid md:grid-cols-3 gap-8">
+
+          {/* FREE */}
 
           <div className="border rounded-xl p-8">
 
@@ -28,37 +38,57 @@ export default function UpgradePage() {
 
             </h2>
 
-            <p className="mb-4">
+            <p className="text-4xl font-bold mb-8">
 
-              ₹0/month
+              ₹0
+
+              <span className="text-lg font-normal">
+
+                /month
+
+              </span>
 
             </p>
 
-            <ul className="space-y-3">
+            <ul className="space-y-4 mb-10">
 
-              <li>
+              <li>✅ 5 leads/month</li>
 
-                ✅ 5 leads/month
+              <li>✅ AI scoring</li>
 
-              </li>
+              <li>✅ Dashboard</li>
 
-              <li>
-
-                ✅ AI scoring
-
-              </li>
-
-              <li>
-
-                ✅ Dashboard
-
-              </li>
+              <li>✅ Follow-up reminders</li>
 
             </ul>
 
+            <button
+
+              disabled
+
+              className="border px-6 py-3 rounded w-full opacity-60"
+
+            >
+
+              Current Plan
+
+            </button>
+
           </div>
 
-          <div className="border rounded-xl p-8">
+          {/* PRO */}
+
+          <div className="border rounded-xl p-8 shadow-lg">
+
+            <div className="mb-4">
+
+              <span className="border rounded-full px-3 py-1 text-sm">
+
+                ⭐ Most Popular
+
+              </span>
+
+            </div>
 
             <h2 className="text-3xl font-bold mb-6">
 
@@ -66,51 +96,39 @@ export default function UpgradePage() {
 
             </h2>
 
-            <p className="mb-4">
+            <p className="text-4xl font-bold mb-8">
 
-              ₹499/month
+              ₹499
+
+              <span className="text-lg font-normal">
+
+                /month
+
+              </span>
 
             </p>
 
-            <ul className="space-y-3">
+            <ul className="space-y-4 mb-10">
 
-              <li>
+              <li>✅ 100 leads/month</li>
 
-                ✅ 100 leads/month
+              <li>✅ AI scoring</li>
 
-              </li>
+              <li>✅ Dashboard</li>
 
-              <li>
+              <li>✅ Kanban</li>
 
-                ✅ AI scoring
+              <li>✅ Notes</li>
 
-              </li>
-
-              <li>
-
-                ✅ Kanban
-
-              </li>
-
-              <li>
-
-                ✅ Reminders
-
-              </li>
+              <li>✅ Follow-up reminders</li>
 
             </ul>
 
-            <button
-
-              className="border px-6 py-3 rounded mt-8 w-full"
-
-            >
-
-              🚀 Coming Soon
-
-            </button>
+            <PayButton />
 
           </div>
+
+          {/* BUSINESS */}
 
           <div className="border rounded-xl p-8">
 
@@ -120,47 +138,57 @@ export default function UpgradePage() {
 
             </h2>
 
-            <p className="mb-4">
+            <p className="text-4xl font-bold mb-8">
 
-              ₹1499/month
+              ₹1499
+
+              <span className="text-lg font-normal">
+
+                /month
+
+              </span>
 
             </p>
 
-            <ul className="space-y-3">
+            <ul className="space-y-4 mb-10">
 
-              <li>
+              <li>✅ Unlimited leads</li>
 
-                ✅ Unlimited leads
+              <li>✅ Priority support</li>
 
-              </li>
-
-              <li>
-
-                ✅ Priority support
-
-              </li>
-
-              <li>
-
-                ✅ Everything included
-
-              </li>
+              <li>✅ Everything included</li>
 
             </ul>
 
             <a
 
-  href="mailto:forgegroupofficial@gmail.com?subject=SalesEmployee AI Pro Plan"
+              href="mailto:forgegroupofficial@gmail.com?subject=LeadsHijack AI Business Plan"
 
-  className="border px-6 py-3 rounded mt-8 w-full block text-center"
+              className="border px-6 py-3 rounded w-full block text-center"
 
->
+            >
 
-  📩 Contact Sales
+              📩 Contact Sales
 
-</a>
+            </a>
 
           </div>
+
+        </div>
+
+        <div className="mt-16 text-center">
+
+          <Link
+
+            href="/billing"
+
+            className="border px-6 py-3 rounded"
+
+          >
+
+            💳 Open Billing
+
+          </Link>
 
         </div>
 
