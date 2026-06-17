@@ -46,7 +46,7 @@ export async function POST() {
 
     const order = await razorpay.orders.create({
 
-      amount: 49900,
+      amount: 100,
 
       currency: "INR",
 
