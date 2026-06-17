@@ -47,29 +47,47 @@ startOfMonth.setHours(
 
 );
 
-const { count } = await supabase
+const { data: profile } =
 
-  .from("leads")
+  await supabase
 
-  .select("*", {
+    .from("profiles")
 
-    count: "exact",
+    .select("*")
 
-    head: true,
+    .eq("user_id", userId)
 
-  })
+    .single();
 
-  .eq("user_id", userId)
+const leadLimit =
 
-  .gte(
+  profile?.lead_limit || 5;
 
-    "created_at",
+const { count } =
 
-    startOfMonth.toISOString()
+  await supabase
 
-  );
+    .from("leads")
 
-if ((count || 0) >= 5) {
+    .select("*", {
+
+      count: "exact",
+
+      head: true,
+
+    })
+
+    .eq("user_id", userId)
+
+    .gte(
+
+      "created_at",
+
+      startOfMonth.toISOString()
+
+    );
+
+if ((count || 0) >= leadLimit) {
 
   return Response.json(
 
@@ -77,7 +95,7 @@ if ((count || 0) >= 5) {
 
       message:
 
-        "Free plan limit reached. Upgrade to Pro 🚀",
+        "Lead limit reached. Upgrade 🚀",
 
     },
 

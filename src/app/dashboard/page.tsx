@@ -10,11 +10,25 @@ export default async function Dashboard() {
 
     .select("*");
 
+    const { data: profile } = await supabase
+
+  .from("profiles")
+
+  .select("*")
+
+  .single();
+
+const isPro =
+
+  profile?.plan === "pro";
+
   const leads = data || [];
 
   const totalLeads = leads.length;
 
-  const leadLimit = 5;
+  const leadLimit =
+
+  profile?.lead_limit || 5;
 
   const remainingLeads = Math.max(
 
@@ -122,11 +136,37 @@ export default async function Dashboard() {
 
       <div className="flex justify-between items-center mb-10">
 
-        <h1 className="text-4xl font-bold">
+        <div>
 
-          📊 Dashboard
+  <h1 className="text-4xl font-bold">
 
-        </h1>
+    📊 Dashboard
+
+  </h1>
+
+  {
+
+  isPro && (
+
+    <div className="mt-2">
+
+      <span
+
+        className="border rounded-full px-4 py-1"
+
+      >
+
+        ⭐ PRO USER
+
+      </span>
+
+    </div>
+
+  )
+
+}
+
+</div>
 
         <div className="flex gap-4">
 
@@ -202,18 +242,25 @@ export default async function Dashboard() {
 
           </div>
 
-          <a
+          {
 
-            href="/upgrade"
+  !isPro && (
 
-            className="border px-6 py-3 rounded"
+    <a
 
-          >
+      href="/upgrade"
 
-            🚀 Upgrade
+      className="border px-4 py-2 rounded"
 
-          </a>
+    >
 
+      🚀 Upgrade
+
+    </a>
+
+  )
+
+}
         </div>
 
       </div>
