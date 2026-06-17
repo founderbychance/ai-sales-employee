@@ -1,11 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function POST(
-
   req: Request
-
 ) {
 
   try {
@@ -74,7 +72,7 @@ export async function POST(
 
       data: existingPayment,
 
-    } = await supabase
+    } = await supabaseAdmin
 
       .from("payments")
 
@@ -88,7 +86,7 @@ export async function POST(
 
       )
 
-      .single();
+      .maybeSingle();
 
     if (existingPayment) {
 
@@ -108,7 +106,7 @@ export async function POST(
 
     }
 
-    await supabase
+    await supabaseAdmin
 
       .from("payments")
 
@@ -130,31 +128,39 @@ export async function POST(
 
       ]);
 
-    await supabase
+    await supabaseAdmin
 
       .from("profiles")
 
-      .update({
+      .upsert(
 
-        plan: "pro",
+        {
 
-        lead_limit: 100,
+          user_id: userId,
 
-      })
+          plan: "pro",
 
-      .eq(
+          lead_limit: 100,
 
-        "user_id",
+        },
 
-        userId
+        {
+
+          onConflict: "user_id",
+
+        }
 
       );
 
-    return Response.json({
+    return Response.json(
 
-      success: true,
+      {
 
-    });
+        success: true,
+
+      }
+
+    );
 
   }
 
