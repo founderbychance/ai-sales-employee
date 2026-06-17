@@ -4,31 +4,43 @@ export async function POST() {
 
   try {
 
-    console.log(
+    if (
 
-      "KEY:",
+      !process.env.RAZORPAY_KEY_ID ||
 
-      process.env.RAZORPAY_KEY_ID
+      !process.env.RAZORPAY_KEY_SECRET
 
-    );
+    ) {
 
-    console.log(
+      return Response.json(
 
-      "SECRET EXISTS:",
+        {
 
-      !!process.env.RAZORPAY_KEY_SECRET
+          message:
 
-    );
+            "Razorpay environment variables are missing",
+
+        },
+
+        {
+
+          status: 500,
+
+        }
+
+      );
+
+    }
 
     const razorpay = new Razorpay({
 
       key_id:
 
-        process.env.RAZORPAY_KEY_ID!,
+        process.env.RAZORPAY_KEY_ID,
 
       key_secret:
 
-        process.env.RAZORPAY_KEY_SECRET!,
+        process.env.RAZORPAY_KEY_SECRET,
 
     });
 
@@ -40,7 +52,15 @@ export async function POST() {
 
       receipt:
 
-        `receipt_${Date.now()}`,
+        `leadshijack_${Date.now()}`,
+
+      notes: {
+
+        product:
+
+          "LeadsHijack AI Pro",
+
+      },
 
     });
 
@@ -64,7 +84,11 @@ export async function POST() {
 
         message:
 
-          error.message,
+          error?.error?.description ||
+
+          error?.message ||
+
+          "Failed to create order",
 
       },
 
