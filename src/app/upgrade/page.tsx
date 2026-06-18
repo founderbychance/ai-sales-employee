@@ -2,7 +2,63 @@ import Link from "next/link";
 
 import PayButton from "@/components/PayButton";
 
-export default function UpgradePage() {
+import { supabase } from "@/lib/supabase";
+
+export default async function UpgradePage() {
+
+    const { data: profile } =
+
+  await supabase
+
+    .from("profiles")
+
+    .select("*")
+
+    .single();
+
+const isPro =
+
+  profile?.plan === "pro";
+
+  if (isPro) {
+
+  return (
+
+    <main className="min-h-screen flex items-center justify-center">
+
+      <div className="border rounded-xl p-10 text-center">
+
+        <h1 className="text-4xl font-bold mb-4">
+
+          🎉 You are already a Pro member
+
+        </h1>
+
+        <p className="text-gray-500 mb-8">
+
+          Enjoy your premium features.
+
+        </p>
+
+        <Link
+
+          href="/dashboard"
+
+          className="border px-6 py-3 rounded"
+
+        >
+
+          📊 Open Dashboard
+
+        </Link>
+
+      </div>
+
+    </main>
+
+  );
+
+}
 
   return (
 
@@ -102,7 +158,7 @@ export default function UpgradePage() {
 
               <span className="text-lg font-normal">
 
-                /month
+                /one-time
 
               </span>
 
@@ -144,7 +200,7 @@ export default function UpgradePage() {
 
               <span className="text-lg font-normal">
 
-                /month
+                Custom
 
               </span>
 

@@ -6,17 +6,29 @@ export default function PayButton() {
 
     const response = await fetch(
 
-      "/api/create-order",
+  "/api/create-order",
 
-      {
+  {
 
-        method: "POST",
+    method: "POST",
 
-      }
+  }
 
-    );
+);
 
-    const order = await response.json();
+if (!response.ok) {
+
+  alert(
+
+    "Unable to start payment."
+
+  );
+
+  return;
+
+}
+
+const order = await response.json();
 
     const options = {
 
@@ -76,47 +88,59 @@ export default function PayButton() {
 
       ) {
 
-        await fetch(
+        const verify = await fetch(
 
-          "/api/verify-payment",
+  "/api/verify-payment",
 
-          {
+  {
 
-            method: "POST",
+    method: "POST",
 
-            headers: {
+    headers: {
 
-              "Content-Type":
+      "Content-Type":
 
-                "application/json",
+        "application/json",
 
-            },
+    },
 
-            body: JSON.stringify({
+    body: JSON.stringify({
 
-              razorpay_payment_id:
+      razorpay_payment_id:
 
-                response.razorpay_payment_id,
+        response.razorpay_payment_id,
 
-              razorpay_order_id:
+      razorpay_order_id:
 
-                response.razorpay_order_id,
+        response.razorpay_order_id,
 
-            }),
+    }),
 
-          }
+  }
 
-        );
+);
 
-        alert(
+if (!verify.ok) {
 
-          "🎉 Pro Plan Activated"
+  alert(
 
-        );
+    "Payment verification failed"
 
-        window.location.href =
+  );
 
-          "/dashboard";
+  return;
+
+}
+
+alert(
+
+  "🎉 Pro Plan Activated"
+
+);
+
+window.location.href =
+
+  "/dashboard";
 
       },
 

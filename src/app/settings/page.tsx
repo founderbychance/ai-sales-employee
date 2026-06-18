@@ -42,15 +42,15 @@ export default function SettingsPage() {
 
             <p>
 
-              Free Plan
+  Dynamic plan information coming soon
 
-            </p>
+</p>
 
-            <p>
+<p>
 
-              5 leads/month
+  View your billing page for details
 
-            </p>
+</p>
 
           </div>
 
@@ -58,21 +58,37 @@ export default function SettingsPage() {
 
             <h2 className="text-2xl font-bold mb-4">
 
-              🚀 Upgrade
+              💳 Billing & Upgrade
 
             </h2>
 
-            <Link
+            <div className="flex gap-4">
 
-              href="/upgrade"
+  <Link
 
-              className="border px-6 py-3 rounded inline-block"
+    href="/upgrade"
 
-            >
+    className="border px-6 py-3 rounded inline-block"
 
-              View Plans
+  >
 
-            </Link>
+    View Plans
+
+  </Link>
+
+  <Link
+
+    href="/billing"
+
+    className="border px-6 py-3 rounded inline-block"
+
+  >
+
+    💳 Billing
+
+  </Link>
+
+</div>
 
           </div>
 

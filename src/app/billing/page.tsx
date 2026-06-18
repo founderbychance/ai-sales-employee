@@ -15,6 +15,21 @@ export default function BillingPage() {
         </h1>
 
         <div className="space-y-8">
+            <div className="border rounded-xl p-8">
+
+  <h2 className="text-3xl font-bold mb-4">
+
+    🧾 Payment History
+
+  </h2>
+
+  <p>
+
+    Coming soon
+
+  </p>
+
+</div>
 
           <div className="border rounded-xl p-8">
 
@@ -26,15 +41,15 @@ export default function BillingPage() {
 
             <p className="text-2xl">
 
-              Free
+  Dynamic plan information coming soon
 
-            </p>
+</p>
 
-            <p className="text-gray-500 mt-2">
+<p className="text-gray-500 mt-2">
 
-              5 leads/month
+  Your current subscription will appear here
 
-            </p>
+</p>
 
           </div>
 
@@ -62,11 +77,11 @@ export default function BillingPage() {
 
               <a
 
-                href="mailto:forgegroupofficial@gmail.com?subject=LeadsHijack AI Upgrade"
+  href="mailto:forgegroupofficial@gmail.com?subject=LeadsHijack AI Business Plan"
 
-                className="border px-6 py-3 rounded"
+  className="border px-6 py-3 rounded"
 
-              >
+>
 
                 📩 Contact Sales
 

@@ -34,7 +34,7 @@ export default async function AdminPage() {
 
   const adminEmail =
 
-    "forgegroupofficial@gmail.com";
+  process.env.ADMIN_EMAIL;
 
   if (email !== adminEmail) {
 

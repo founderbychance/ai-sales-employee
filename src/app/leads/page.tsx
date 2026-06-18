@@ -99,17 +99,17 @@ export default function LeadsPage() {
 
         </h1>
 
-        <a
+        <Link
 
-          href="/api/export"
+  href="/api/export"
 
-          className="border px-4 py-2 rounded hover:bg-gray-100"
+  className="border px-4 py-2 rounded hover:bg-gray-100"
 
-        >
+>
 
-          ⬇️ Export CSV
+  ⬇️ Export CSV
 
-        </a>
+</Link>
 
       </div>
 
@@ -183,7 +183,19 @@ export default function LeadsPage() {
 
       <div className="space-y-4">
 
-        {filteredLeads.map((lead) => (
+  {
+
+    filteredLeads.length === 0 ? (
+
+      <div className="border rounded-xl p-10 text-center">
+
+        No leads found.
+
+      </div>
+
+    ) : (
+
+      filteredLeads.map((lead) => (
 
           <Link
 
@@ -211,15 +223,25 @@ export default function LeadsPage() {
 
               <p>🟢 Status: {lead.status}</p>
 
-              <p>🤖 AI Score: {lead.ai_score}/10</p>
+              <p>
+
+                 🤖 AI Score:
+
+                {lead.ai_score ?? 0}/10
+
+              </p>
 
             </div>
 
           </Link>
 
-        ))}
+        ))
 
-      </div>
+)
+
+}
+
+</div>
 
     </main>
 

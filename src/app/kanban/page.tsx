@@ -1,18 +1,43 @@
 import { supabase } from "@/lib/supabase";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function KanbanPage() {
 
-  const { data } = await supabase
 
-    .from("leads")
 
-    .select("*")
+const { userId } = await auth();
 
-    .order("created_at", {
+if (!userId) {
 
-      ascending: false,
+  return (
 
-    });
+    <main className="min-h-screen flex items-center justify-center">
+
+      <h1 className="text-3xl font-bold">
+
+        🔒 Please sign in
+
+      </h1>
+
+    </main>
+
+  );
+
+}
+
+const { data } = await supabase
+
+  .from("leads")
+
+  .select("*")
+
+  .eq("user_id", userId)
+
+  .order("created_at", {
+
+    ascending: false,
+
+  });
 
   const leads = data || [];
 
@@ -94,9 +119,9 @@ export default async function KanbanPage() {
 
                     <p>
 
-🤖 {lead.ai_score}/10
+🤖 {lead.ai_score ?? 0}/10
 
-                    </p>
+</p>
 
                   </div>
 

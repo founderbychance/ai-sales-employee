@@ -55,7 +55,7 @@ export default function Home() {
 
           <div className="border rounded-full px-6 py-2">
 
-            🚀 Beta Program • Accepting 10 Businesses
+            🚀 Early Access • Now Onboarding Businesses
 
           </div>
 
@@ -87,29 +87,45 @@ export default function Home() {
 
           <div className="flex flex-wrap justify-center gap-4">
 
-            <Link
+            {
 
-              href="/dashboard"
+  isSignedIn && (
 
-              className="border px-6 py-4 rounded text-lg"
+    <Link
 
-            >
+      href="/dashboard"
 
-              🚀 Open Dashboard
+      className="border px-6 py-4 rounded text-lg"
 
-            </Link>
+    >
 
-            <Link
+      🚀 Open Dashboard
 
-              href="/leads"
+    </Link>
 
-              className="border px-6 py-4 rounded text-lg"
+  )
 
-            >
+}
 
-              👥 View Leads
+            {
 
-            </Link>
+  isSignedIn && (
+
+    <Link
+
+      href="/leads"
+
+      className="border px-6 py-4 rounded text-lg"
+
+    >
+
+      👥 View Leads
+
+    </Link>
+
+  )
+
+}
 
             <Link
 
@@ -139,7 +155,23 @@ export default function Home() {
 
             </h2>
 
-            <LeadForm />
+            {
+
+  isSignedIn ? (
+
+    <LeadForm />
+
+  ) : (
+
+    <div className="border rounded-xl p-8 text-center">
+
+      🔐 Sign in to create leads
+
+    </div>
+
+  )
+
+}
 
           </div>
 
@@ -387,7 +419,7 @@ export default function Home() {
 
         <footer className="border-t pt-10 text-center text-gray-500">
 
-          LeadsHijack AI © 2026
+          LeadsHijack AI © {new Date().getFullYear()}
 
         </footer>
 
