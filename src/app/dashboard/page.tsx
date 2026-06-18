@@ -2,19 +2,49 @@ import { supabase } from "@/lib/supabase";
 
 import LeadsChart from "@/components/LeadsChart";
 
+import { auth } from "@clerk/nextjs/server";
+
+import Link from "next/link";
+
 export default async function Dashboard() {
 
-  const { data } = await supabase
+  
 
-    .from("leads")
+const { userId } = await auth();
 
-    .select("*");
+if (!userId) {
 
-    const { data: profile } = await supabase
+  return (
+
+    <main className="min-h-screen flex items-center justify-center">
+
+      <h1 className="text-3xl font-bold">
+
+        🔒 Please sign in
+
+      </h1>
+
+    </main>
+
+  );
+
+}
+
+const { data } = await supabase
+
+  .from("leads")
+
+  .select("*")
+
+  .eq("user_id", userId);
+
+const { data: profile } = await supabase
 
   .from("profiles")
 
   .select("*")
+
+  .eq("user_id", userId)
 
   .single();
 
@@ -132,9 +162,9 @@ const isPro =
 
   return (
 
-    <main className="min-h-screen p-10">
+    <main className="min-h-screen p-4 md:p-10">
 
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-6 mb-10">
 
         <div>
 
@@ -168,43 +198,43 @@ const isPro =
 
 </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
 
-          <a
+          <Link
 
-            href="/"
+  href="/"
 
-            className="border px-4 py-2 rounded"
+  className="border px-4 py-2 rounded"
 
-          >
+>
 
-            ➕ Add Lead
+  ➕ Add Lead
 
-          </a>
+</Link>
 
-          <a
+          <Link
 
-            href="/leads"
+  href="/leads"
 
-            className="border px-4 py-2 rounded"
+  className="border px-4 py-2 rounded"
 
-          >
+>
 
-            👥 Leads
+  👥 Leads
 
-          </a>
+</Link>
 
-          <a
+          <Link
 
-            href="/kanban"
+  href="/kanban"
 
-            className="border px-4 py-2 rounded"
+  className="border px-4 py-2 rounded"
 
-          >
+>
 
-            📋 Kanban
+  📋 Kanban
 
-          </a>
+</Link>
 
         </div>
 
@@ -214,13 +244,13 @@ const isPro =
 
       <div className="border rounded-xl p-8 mb-8">
 
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
 
           <div>
 
             <h2 className="text-2xl font-bold">
 
-              📦 Free Plan
+              📦 {(profile?.plan || "free").toUpperCase()} PLAN
 
             </h2>
 
@@ -246,17 +276,17 @@ const isPro =
 
   !isPro && (
 
-    <a
+    <Link
 
-      href="/upgrade"
+  href="/upgrade"
 
-      className="border px-4 py-2 rounded"
+  className="border px-4 py-2 rounded"
 
-    >
+>
 
-      🚀 Upgrade
+  🚀 Upgrade
 
-    </a>
+</Link>
 
   )
 
@@ -267,7 +297,7 @@ const isPro =
 
       {/* Main Stats */}
 
-      <div className="grid md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
 
         <div className="border rounded-xl p-8 shadow">
 
@@ -439,43 +469,59 @@ const isPro =
 
           <div className="space-y-4">
 
-            {recentLeads.map(
+  {
 
-              (lead) => (
+    recentLeads.length === 0 ? (
 
-                <div
+      <p>
 
-                  key={lead.id}
+        No recent activity
 
-                  className="border-b pb-3"
+      </p>
 
-                >
+    ) : (
 
-                  <p className="font-bold">
+      recentLeads.map(
 
-                    {lead.name}
+        (lead) => (
 
-                  </p>
+          <div
 
-                  <p>
+            key={lead.id}
 
-                    🏢 {lead.company}
+            className="border-b pb-3"
 
-                  </p>
+          >
 
-                  <p>
+            <p className="font-bold">
 
-                    🟢 {lead.stage}
+              {lead.name}
 
-                  </p>
+            </p>
 
-                </div>
+            <p>
 
-              )
+              🏢 {lead.company}
 
-            )}
+            </p>
+
+            <p>
+
+              🟢 {lead.stage}
+
+            </p>
 
           </div>
+
+        )
+
+      )
+
+    )
+
+  }
+
+</div>
 
         </div>
 

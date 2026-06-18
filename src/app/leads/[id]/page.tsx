@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@clerk/nextjs";
 
 export default function LeadDetailsPage() {
 
   const params = useParams();
+
+  const { userId } = useAuth();
 
   const [lead, setLead] = useState<any>(null);
 
@@ -20,15 +23,19 @@ export default function LeadDetailsPage() {
 
     async function fetchLead() {
 
-      const { data } = await supabase
+      if (!userId) return;
 
-        .from("leads")
+const { data } = await supabase
 
-        .select("*")
+  .from("leads")
 
-        .eq("id", params.id)
+  .select("*")
 
-        .single();
+  .eq("id", params.id)
+
+  .eq("user_id", userId)
+
+  .single();
 
       setLead(data);
 
@@ -48,7 +55,7 @@ export default function LeadDetailsPage() {
 
     fetchLead();
 
-  }, [params.id]);
+  }, [params.id, userId]);
 
   async function updateStage(
     stage: string
@@ -64,7 +71,9 @@ export default function LeadDetailsPage() {
 
       })
 
-      .eq("id", params.id);
+      .eq("id", params.id)
+
+      .eq("user_id", userId);
 
     setLead({
 
@@ -92,7 +101,9 @@ export default function LeadDetailsPage() {
 
       })
 
-      .eq("id", params.id);
+      .eq("id", params.id)
+
+      .eq("user_id", userId);
 
     if (error) {
 
@@ -118,7 +129,9 @@ export default function LeadDetailsPage() {
 
       })
 
-      .eq("id", params.id);
+      .eq("id", params.id)
+
+      .eq("user_id", userId);
 
     if (error) {
 
@@ -134,21 +147,25 @@ export default function LeadDetailsPage() {
 
   if (!lead) {
 
-    return (
+  return (
 
-      <main className="p-10">
+    <main className="min-h-screen flex items-center justify-center">
 
-        Loading...
+      <h1 className="text-2xl font-bold">
 
-      </main>
+        🔒 Lead not found
 
-    );
+      </h1>
 
-  }
+    </main>
+
+  );
+
+}
 
   return (
 
-    <main className="min-h-screen p-10">
+    <main className="min-h-screen p-4 md:p-10">
 
       <h1 className="text-4xl font-bold mb-10">
 
@@ -178,9 +195,9 @@ export default function LeadDetailsPage() {
 
         <p>
 
-🟢 Status: {lead.status}
+🟢 Stage: {lead.stage}
 
-        </p>
+</p>
 
         <p>
 

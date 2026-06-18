@@ -56,13 +56,45 @@ export default function LeadsChart({
 
       >
 
-        <BarChart data={data}>
+        <BarChart
 
-          <XAxis dataKey="name" />
+  data={[...data].sort(
+
+    (a, b) =>
+
+      b.ai_score - a.ai_score
+
+  )}
+
+>
+
+          <XAxis
+
+  dataKey="name"
+
+  angle={-30}
+
+  textAnchor="end"
+
+  interval={0}
+
+  height={80}
+
+/>
 
           <YAxis />
 
-          <Tooltip />
+          <Tooltip
+
+  formatter={(value) => [
+
+    `${value}/10`,
+
+    "AI Score",
+
+  ]}
+
+/>
 
           <Bar dataKey="ai_score" />
 

@@ -1,6 +1,28 @@
 import Link from "next/link";
 
-export default function SettingsPage() {
+import { auth } from "@clerk/nextjs/server";
+
+export default async function SettingsPage() {
+
+  const { userId } = await auth();
+
+  if (!userId) {
+
+    return (
+
+      <main className="min-h-screen flex items-center justify-center">
+
+        <h1 className="text-3xl font-bold">
+
+          🔒 Please sign in
+
+        </h1>
+
+      </main>
+
+    );
+
+  }
 
   return (
 

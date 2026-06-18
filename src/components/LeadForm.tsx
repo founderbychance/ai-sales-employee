@@ -8,13 +8,21 @@ export default function LeadForm() {
 
   const [email, setEmail] = useState("");
 
-  const [company, setCompany] = useState("");
+const [company, setCompany] = useState("");
+
+const [loading, setLoading] = useState(false);
 
   async function handleSubmit(
-    e: React.FormEvent
-  ) {
+  e: React.FormEvent
+) {
+
+  try {
 
     e.preventDefault();
+
+    if (loading) return;
+
+    setLoading(true);
 
     const response = await fetch(
 
@@ -68,19 +76,33 @@ export default function LeadForm() {
 
       }
 
-      return;
+      setLoading(false);
+
+return;
 
     }
 
     alert(data.message);
 
-    setName("");
+setName("");
 
-    setEmail("");
+setEmail("");
 
-    setCompany("");
+setCompany("");
 
-  }
+setLoading(false);
+
+} catch (error) {
+
+  console.log(error);
+
+  alert("Something went wrong");
+
+  setLoading(false);
+
+}
+
+}
 
   return (
 
@@ -148,15 +170,25 @@ export default function LeadForm() {
 
       <button
 
-        className="bg-black text-white p-3 rounded"
+  className="bg-black text-white p-3 rounded disabled:opacity-50"
 
-        type="submit"
+  type="submit"
 
-      >
+  disabled={loading}
 
-        Submit
+>
 
-      </button>
+  {
+
+    loading
+
+      ? "Submitting..."
+
+      : "Submit"
+
+  }
+
+</button>
 
     </form>
 
