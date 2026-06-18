@@ -1,8 +1,66 @@
 import Razorpay from "razorpay";
 
+import { auth } from "@clerk/nextjs/server";
+
+import { supabase } from "@/lib/supabase";
+
 export async function POST() {
 
   try {
+
+    const { userId } = await auth();
+
+    if (!userId) {
+
+      return Response.json(
+
+        {
+
+          message: "Unauthorized",
+
+        },
+
+        {
+
+          status: 401,
+
+        }
+
+      );
+
+    }
+
+    const { data: profile } = await supabase
+
+      .from("profiles")
+
+      .select("*")
+
+      .eq("user_id", userId)
+
+      .single();
+
+    if (profile?.plan === "pro") {
+
+      return Response.json(
+
+        {
+
+          message:
+
+            "You are already a Pro member",
+
+        },
+
+        {
+
+          status: 400,
+
+        }
+
+      );
+
+    }
 
     if (
 

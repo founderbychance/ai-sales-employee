@@ -26,15 +26,16 @@ export default async function BillingPage() {
 
   }
 
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
 
-    .from("profiles")
+  .from("profiles")
 
-    .select("*")
+  .select("*")
 
-    .eq("user_id", userId)
+  .eq("user_id", userId)
 
-    .single();
+  .single();
+
 
   const { data: payments } = await supabase
 
@@ -76,13 +77,13 @@ export default async function BillingPage() {
 
             <p className="text-2xl">
 
-              {(profile?.plan || "free").toUpperCase()}
+  {profile?.plan?.toUpperCase() || "FREE"}
 
-            </p>
+</p>
 
             <p className="text-gray-500 mt-2">
 
-              Lead limit: {profile?.lead_limit || 5}
+              Lead limit: {profile?.lead_limit ?? 5}
 
             </p>
 

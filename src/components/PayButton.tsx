@@ -1,158 +1,198 @@
 "use client";
 
+import { useState } from "react";
+
 export default function PayButton() {
+
+  const [loading, setLoading] = useState(false);
 
   async function handlePayment() {
 
-    const response = await fetch(
+    if (loading) return;
 
-  "/api/create-order",
+    setLoading(true);
 
-  {
+    try {
 
-    method: "POST",
+      const response = await fetch(
 
-  }
+        "/api/create-order",
 
-);
+        {
 
-if (!response.ok) {
+          method: "POST",
 
-  alert(
+        }
 
-    "Unable to start payment."
+      );
 
-  );
+      if (!response.ok) {
 
-  return;
+        alert(
 
-}
+          "Unable to start payment."
 
-const order = await response.json();
+        );
 
-    const options = {
+        setLoading(false);
 
-      key:
+        return;
 
-        process.env
+      }
 
-          .NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      const order = await response.json();
 
-      amount:
+      const options = {
 
-        order.amount,
+        key:
 
-      currency:
+          process.env
 
-        order.currency,
+            .NEXT_PUBLIC_RAZORPAY_KEY_ID,
 
-      name:
+        amount:
 
-        "LeadsHijack AI",
+          order.amount,
 
-      description:
+        currency:
 
-        "Pro Plan",
+          order.currency,
 
-      order_id:
+        name:
 
-        order.id,
+          "LeadsHijack AI",
 
-      prefill: {
+        description:
 
-        name: "",
+          "Pro Plan",
 
-        email: "",
+        order_id:
 
-        contact: "",
+          order.id,
 
-      },
+        prefill: {
 
-      notes: {
+          name: "",
 
-        product:
+          email: "",
 
-          "LeadsHijack AI Pro",
+          contact: "",
 
-      },
+        },
 
-      theme: {
+        notes: {
 
-        color: "#000000",
+          product:
 
-      },
+            "LeadsHijack AI Pro",
 
-      handler: async function (
+        },
 
-        response: any
+        theme: {
 
-      ) {
+          color: "#000000",
 
-        const verify = await fetch(
+        },
 
-  "/api/verify-payment",
+        handler: async function (
 
-  {
+          response: any
 
-    method: "POST",
+        ) {
 
-    headers: {
+          const verify = await fetch(
 
-      "Content-Type":
+            "/api/verify-payment",
 
-        "application/json",
+            {
 
-    },
+              method: "POST",
 
-    body: JSON.stringify({
+              headers: {
 
-      razorpay_payment_id:
+                "Content-Type":
 
-        response.razorpay_payment_id,
+                  "application/json",
 
-      razorpay_order_id:
+              },
 
-        response.razorpay_order_id,
+              body: JSON.stringify({
 
-    }),
+                razorpay_payment_id:
 
-  }
+                  response.razorpay_payment_id,
 
-);
+                razorpay_order_id:
 
-if (!verify.ok) {
+                  response.razorpay_order_id,
 
-  alert(
+              }),
 
-    "Payment verification failed"
+            }
 
-  );
+          );
 
-  return;
+          if (!verify.ok) {
 
-}
+            alert(
 
-alert(
+              "Payment verification failed"
 
-  "🎉 Pro Plan Activated"
+            );
 
-);
+            setLoading(false);
 
-window.location.href =
+            return;
 
-  "/dashboard";
+          }
 
-      },
+          alert(
 
-    };
+            "🎉 Pro Plan Activated"
 
-    const razorpay = new (
+          );
 
-      window as any
+          window.location.href =
 
-    ).Razorpay(options);
+            "/dashboard";
 
-    razorpay.open();
+        },
+
+        modal: {
+
+          ondismiss: function () {
+
+            setLoading(false);
+
+          },
+
+        },
+
+      };
+
+      const razorpay = new (
+
+        window as any
+
+      ).Razorpay(options);
+
+      razorpay.open();
+
+    }
+
+    catch (error) {
+
+      console.log(error);
+
+      alert(
+
+        "Something went wrong"
+
+      );
+
+      setLoading(false);
+
+    }
 
   }
 
@@ -162,11 +202,21 @@ window.location.href =
 
       onClick={handlePayment}
 
-      className="border px-6 py-3 rounded w-full"
+      disabled={loading}
+
+      className="border px-6 py-3 rounded w-full disabled:opacity-50"
 
     >
 
-      💳 Pay ₹499
+      {
+
+        loading
+
+          ? "Processing..."
+
+          : "💳 Pay ₹499"
+
+      }
 
     </button>
 
