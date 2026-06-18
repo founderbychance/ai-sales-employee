@@ -1,23 +1,51 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+
+import {
+
+  useParams,
+
+  useRouter,
+
+} from "next/navigation";
+
 import { supabase } from "@/lib/supabase";
+
 import { useAuth } from "@clerk/nextjs";
 
 export default function LeadDetailsPage() {
 
   const params = useParams();
 
+  const router = useRouter();
+
   const { userId } = useAuth();
 
-  const [lead, setLead] = useState<any>(null);
+  const [loading, setLoading] =
 
-  const [followUpDate, setFollowUpDate] = useState("");
+    useState(true);
 
-  const [followUpNote, setFollowUpNote] = useState("");
+  const [lead, setLead] =
 
-  const [notes, setNotes] = useState("");
+    useState<any>(null);
+
+  const [followUpDate,
+
+    setFollowUpDate] =
+
+    useState("");
+
+  const [followUpNote,
+
+    setFollowUpNote] =
+
+    useState("");
+
+  const [notes, setNotes] =
+
+    useState("");
 
   useEffect(() => {
 
@@ -25,31 +53,41 @@ export default function LeadDetailsPage() {
 
       if (!userId) return;
 
-const { data } = await supabase
+      const { data } =
 
-  .from("leads")
+        await supabase
 
-  .select("*")
+          .from("leads")
 
-  .eq("id", params.id)
+          .select("*")
 
-  .eq("user_id", userId)
+          .eq("id", params.id)
 
-  .single();
+          .eq("user_id", userId)
+
+          .single();
 
       setLead(data);
 
       setFollowUpDate(
+
         data?.follow_up_date || ""
+
       );
 
       setFollowUpNote(
+
         data?.follow_up_note || ""
+
       );
 
       setNotes(
+
         data?.notes || ""
+
       );
+
+      setLoading(false);
 
     }
 
@@ -58,7 +96,9 @@ const { data } = await supabase
   }, [params.id, userId]);
 
   async function updateStage(
+
     stage: string
+
   ) {
 
     await supabase
@@ -87,23 +127,27 @@ const { data } = await supabase
 
   async function saveReminder() {
 
-    const { error } = await supabase
+    const { error } =
 
-      .from("leads")
+      await supabase
 
-      .update({
+        .from("leads")
 
-        follow_up_date:
-          followUpDate,
+        .update({
 
-        follow_up_note:
-          followUpNote,
+          follow_up_date:
 
-      })
+            followUpDate,
 
-      .eq("id", params.id)
+          follow_up_note:
 
-      .eq("user_id", userId);
+            followUpNote,
+
+        })
+
+        .eq("id", params.id)
+
+        .eq("user_id", userId);
 
     if (error) {
 
@@ -119,19 +163,21 @@ const { data } = await supabase
 
   async function saveNotes() {
 
-    const { error } = await supabase
+    const { error } =
 
-      .from("leads")
+      await supabase
 
-      .update({
+        .from("leads")
 
-        notes,
+        .update({
 
-      })
+          notes,
 
-      .eq("id", params.id)
+        })
 
-      .eq("user_id", userId);
+        .eq("id", params.id)
+
+        .eq("user_id", userId);
 
     if (error) {
 
@@ -145,23 +191,75 @@ const { data } = await supabase
 
   }
 
+  async function deleteLead() {
+
+    const shouldDelete =
+
+      confirm(
+
+        "Delete this lead permanently?"
+
+      );
+
+    if (!shouldDelete) return;
+
+    const { error } =
+
+      await supabase
+
+        .from("leads")
+
+        .delete()
+
+        .eq("id", params.id)
+
+        .eq("user_id", userId);
+
+    if (error) {
+
+      alert(error.message);
+
+      return;
+
+    }
+
+    alert("Lead deleted ✅");
+
+    router.push("/leads");
+
+  }
+
+  if (loading) {
+
+    return (
+
+      <main className="min-h-screen flex items-center justify-center">
+
+        Loading...
+
+      </main>
+
+    );
+
+  }
+
   if (!lead) {
 
-  return (
+    return (
 
-    <main className="min-h-screen flex items-center justify-center">
+      <main className="min-h-screen flex items-center justify-center">
 
-      <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold">
 
-        🔒 Lead not found
+          🔒 Lead not found
 
-      </h1>
+        </h1>
 
-    </main>
+      </main>
 
-  );
+    );
 
-}
+  }
 
   return (
 
@@ -183,31 +281,39 @@ const { data } = await supabase
 
         <p>
 
-📧 {lead.email}
+          📧 {lead.email}
 
         </p>
 
         <p>
 
-🏢 {lead.company}
+          🏢 {lead.company}
 
         </p>
 
         <p>
 
-🟢 Stage: {lead.stage}
+          🟢 Stage:
 
-</p>
+          {" "}
 
-        <p>
-
-🤖 AI Score: {lead.ai_score}/10
+          {lead.stage}
 
         </p>
 
         <p>
 
-📝 {lead.ai_summary}
+          🤖 AI Score:
+
+          {" "}
+
+          {lead.ai_score}/10
+
+        </p>
+
+        <p>
+
+          📝 {lead.ai_summary}
 
         </p>
 
@@ -243,7 +349,11 @@ const { data } = await supabase
 
               onClick={() =>
 
-                updateStage("contacted")
+                updateStage(
+
+                  "contacted"
+
+                )
 
               }
 
@@ -259,7 +369,11 @@ const { data } = await supabase
 
               onClick={() =>
 
-                updateStage("qualified")
+                updateStage(
+
+                  "qualified"
+
+                )
 
               }
 
@@ -338,7 +452,9 @@ const { data } = await supabase
             onChange={(e) =>
 
               setFollowUpDate(
+
                 e.target.value
+
               )
 
             }
@@ -358,7 +474,9 @@ const { data } = await supabase
             onChange={(e) =>
 
               setFollowUpNote(
+
                 e.target.value
+
               )
 
             }
@@ -400,7 +518,9 @@ const { data } = await supabase
             onChange={(e) =>
 
               setNotes(
+
                 e.target.value
+
               )
 
             }
@@ -421,6 +541,22 @@ const { data } = await supabase
 
         </div>
 
+        <div className="mt-10">
+
+          <button
+
+            className="border px-4 py-2 rounded"
+
+            onClick={deleteLead}
+
+          >
+
+            🗑️ Delete Lead
+
+          </button>
+
+        </div>
+
       </div>
 
     </main>
@@ -428,3 +564,4 @@ const { data } = await supabase
   );
 
 }
+
