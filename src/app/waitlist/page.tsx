@@ -12,6 +12,8 @@ export default function WaitlistPage() {
 
   const [business, setBusiness] = useState("");
 
+  const [success, setSuccess] = useState(false);
+
   async function joinWaitlist(
     e: React.FormEvent
   ) {
@@ -38,17 +40,18 @@ export default function WaitlistPage() {
 
     if (error) {
 
-      alert(error.message);
+  console.log(error);
 
-      return;
+  return;
 
-    }
+}
+    setSuccess(true);
 
-    alert(
+setTimeout(() => {
 
-      "🎉 You're on the waitlist!"
+setSuccess(false);
 
-    );
+}, 3000);
 
     setName("");
 
@@ -64,7 +67,41 @@ export default function WaitlistPage() {
 
       <div className="max-w-xl mx-auto">
 
-        <h1 className="text-5xl font-bold text-center mb-4">
+{
+
+success && (
+
+<div
+
+className="
+
+mb-6
+
+bg-green-500/10
+
+border
+
+border-green-500
+
+text-green-300
+
+p-4
+
+rounded-2xl
+
+"
+
+>
+
+🎉 You're on the waitlist!
+
+</div>
+
+)
+
+}
+
+<h1 className="text-5xl font-bold text-center mb-4">
 
           🚀 Join Our Waitlist
 
