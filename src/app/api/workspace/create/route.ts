@@ -112,19 +112,15 @@ export async function POST(
 
           {
 
-            name:
+name:
 
-              body.name,
+  body.name,
 
-            type:
+owner_id:
 
-              body.type,
+  userId,
 
-            owner_id:
-
-              userId,
-
-          },
+}
 
         ])
 
