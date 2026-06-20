@@ -16,11 +16,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
 
-  title: "SalesPilotAI",
+  title: "SalesPilotAI | AI CRM for Sales Teams",
 
   description:
 
-    "AI-powered lead qualification platform",
+    "AI-powered CRM for freelancers, agencies and businesses.",
 
 };
 
@@ -144,7 +144,35 @@ py-4
 
                 >
 
-                  SalesPilotAI
+                  <div className="flex items-center gap-3">
+
+<img
+
+src="/logo.png"
+
+alt="SalesPilotAI"
+
+className="h-10 w-10"
+
+/>
+
+<span
+
+className="
+
+text-3xl
+
+font-black
+
+"
+
+>
+
+SalesPilotAI
+
+</span>
+
+</div>
 
                 </h1>
 
@@ -252,7 +280,7 @@ py-4
 
     flex-1
 
-    xl:ml-72
+    lg:ml-72
 
     pb-24
 

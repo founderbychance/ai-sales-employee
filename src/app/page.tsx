@@ -514,29 +514,115 @@ duration-300
 
         <footer
 
-          className="
+className="
 
-          border-t
+border-t
 
-          border-[#232323]
+border-[#232323]
 
-          pt-10
+pt-16
 
-          text-center
+pb-10
 
-          text-gray-500
+mt-20
 
-        "
+"
 
-        >
+>
 
-          SalesPilotAI ©
+<div className="max-w-7xl mx-auto">
 
-          {" "}
+<div className="grid md:grid-cols-3 gap-10">
 
-          {new Date().getFullYear()}
+<div>
 
-        </footer>
+<h3 className="text-2xl font-bold mb-4">
+
+SalesPilotAI
+
+</h3>
+
+<p className="text-gray-400">
+
+AI-powered CRM for freelancers,
+
+agencies and businesses.
+
+</p>
+
+</div>
+
+<div>
+
+<h4 className="font-bold mb-4">
+
+Product
+
+</h4>
+
+<div className="space-y-2 text-gray-400">
+
+<p>Dashboard</p>
+
+<p>Leads</p>
+
+<p>Analytics</p>
+
+<p>Pricing</p>
+
+</div>
+
+</div>
+
+<div>
+
+<h4 className="font-bold mb-4">
+
+Support
+
+</h4>
+
+<div className="space-y-2 text-gray-400">
+
+<p>Privacy</p>
+
+<p>Terms</p>
+
+<p>forgegroupofficial@gmail.com</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+
+className="
+
+border-t
+
+border-[#232323]
+
+mt-10
+
+pt-6
+
+text-center
+
+text-gray-500
+
+"
+
+>
+
+© {new Date().getFullYear()} SalesPilotAI
+
+</div>
+
+</div>
+
+</footer>
 
       </div>
 

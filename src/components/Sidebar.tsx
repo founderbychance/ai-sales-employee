@@ -240,7 +240,7 @@ export default function Sidebar() {
 
       hidden
 
-      xl:flex
+      lg:flex
 
       fixed
 
