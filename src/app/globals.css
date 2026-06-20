@@ -87,3 +87,43 @@ transition:0.3s;
 background:#285C70;
 
 }
+
+/* Chrome, Edge, Safari */
+
+::-webkit-scrollbar {
+
+width: 10px;
+
+}
+
+::-webkit-scrollbar-track {
+
+background: #0A0F14;
+
+}
+
+::-webkit-scrollbar-thumb {
+
+background: #1C3E4E;
+
+border-radius: 999px;
+
+border: 2px solid #0A0F14;
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+
+background: #285C70;
+
+}
+
+/* Firefox */
+
+* {
+
+scrollbar-width: thin;
+
+scrollbar-color: #1C3E4E #0A0F14;
+
+}

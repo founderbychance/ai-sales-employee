@@ -124,10 +124,6 @@ export async function POST(
 
               userId,
 
-            plan:
-
-              "free",
-
           },
 
         ])
