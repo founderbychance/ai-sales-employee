@@ -116,7 +116,7 @@ export async function POST() {
 
         product:
 
-          "LeadsHijack AI Pro",
+          "SalesPilotAI Pro",
 
       },
 

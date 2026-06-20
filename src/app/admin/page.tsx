@@ -88,13 +88,15 @@ export default async function AdminPage() {
 
         <p className="text-gray-500 mb-10">
 
-          Potential customers interested in LeadsHijack AI.
+          Potential customers interested in SalesPilotAI.
 
         </p>
 
         {users.length === 0 ? (
 
-          <div className="border rounded-xl p-10 text-center">
+          <div className="bg-[#111111]
+border border-[#232323]
+rounded-3xl p-10 text-center">
 
             No waitlist users yet.
 

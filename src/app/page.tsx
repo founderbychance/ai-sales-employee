@@ -1,12 +1,17 @@
 "use client";
 
 import Link from "next/link";
+
 import LeadForm from "@/components/LeadForm";
 
 import {
+
   SignInButton,
+
   UserButton,
+
   useUser,
+
 } from "@clerk/nextjs";
 
 export default function Home() {
@@ -17,121 +22,287 @@ export default function Home() {
 
     <main className="min-h-screen">
 
-      <div className="max-w-7xl mx-auto p-10">
+      <div className="max-w-7xl mx-auto px-6 py-12">
 
-        {/* HEADER */}
+        {/* Header */}
 
-        <div className="flex justify-between items-center mb-20">
+        <div className="flex justify-between items-center mb-24">
 
-          <h1 className="text-3xl font-bold">
+          <div>
 
-            LeadsHijack AI
+            <h1 className="text-4xl font-bold">
 
-          </h1>
+              SalesPilotAI
 
-          {!isSignedIn ? (
+            </h1>
 
-            <SignInButton mode="modal">
+            <p className="text-gray-400 mt-2">
 
-              <button className="border px-4 py-2 rounded">
+              Your AI Sales Employee
 
-                🔐 Sign In
+            </p>
 
-              </button>
+          </div>
 
-            </SignInButton>
+          {
 
-          ) : (
+            !isSignedIn ? (
 
-            <UserButton />
+              <SignInButton mode="modal">
 
-          )}
+                <button
+
+                  className="
+
+                  bg-[#1C3E4E]
+
+                  hover:bg-[#285C70]
+
+                  px-6
+
+                  py-3
+
+                  rounded-2xl
+
+                  transition-all
+
+                "
+
+                >
+
+                  🔐 Sign In
+
+                </button>
+
+              </SignInButton>
+
+            ) : (
+
+              <UserButton />
+
+            )
+
+          }
 
         </div>
 
-        {/* BETA BANNER */}
+        {/* Hero */}
 
-        <section className="flex justify-center mb-10">
+        <section className="text-center mb-32">
 
-          <div className="border rounded-full px-6 py-2">
+          <div
+
+            className="
+
+            inline-flex
+
+            px-5
+
+            py-2
+
+            rounded-full
+
+            border
+
+            border-[#353535]
+
+            bg-[#111111]
+
+            mb-8
+
+          "
+
+          >
 
             🚀 Early Access • Now Onboarding Businesses
 
           </div>
 
-        </section>
+          <h1
 
-        {/* HERO */}
+className="
 
-        <section className="text-center mb-24">
+text-6xl
 
-          <p className="text-sm font-semibold mb-4">
+md:text-8xl
 
-            AI POWERED SALES CRM
+font-black
 
-          </p>
+leading-tight
 
-          <h1 className="text-6xl font-bold mb-6">
+mb-8
 
-            Hire an AI Sales Employee
+bg-gradient-to-r
+
+from-[#F2EDEA]
+
+via-[#60899B]
+
+to-[#285C70]
+
+bg-clip-text
+
+text-transparent
+
+"
+
+>
+
+            Your
+
+            <br />
+
+            AI Sales Employee
 
           </h1>
 
-          <p className="text-xl text-gray-500 max-w-3xl mx-auto mb-10">
+          <p
 
-            Capture, score and organize every lead automatically.
+            className="
 
-            Never lose a customer again.
+            text-xl
+
+            text-gray-400
+
+            max-w-3xl
+
+            mx-auto
+
+            mb-12
+
+          "
+
+          >
+
+            Capture, qualify, score and
+
+            organize every lead automatically.
+
+            Never lose another customer again.
 
           </p>
 
-          <div className="flex flex-wrap justify-center gap-4">
+          <div
+
+            className="
+
+            flex
+
+            flex-wrap
+
+            justify-center
+
+            gap-6
+
+          "
+
+          >
 
             {
 
-  isSignedIn && (
+              isSignedIn && (
 
-    <Link
+                <Link
 
-      href="/dashboard"
+                  href="/dashboard"
 
-      className="border px-6 py-4 rounded text-lg"
+                  className="
 
-    >
+bg-[#1C3E4E]
 
-      🚀 Open Dashboard
+hover:bg-[#285C70]
 
-    </Link>
+transition-all
 
-  )
+duration-300
 
-}
+hover:-translate-y-1
+
+hover:shadow-2xl
+
+px-8
+
+py-4
+
+rounded-2xl
+
+"
+
+                >
+
+                  🚀 Dashboard
+
+                </Link>
+
+              )
+
+            }
 
             {
 
-  isSignedIn && (
+              isSignedIn && (
 
-    <Link
+                <Link
 
-      href="/leads"
+                  href="/leads"
 
-      className="border px-6 py-4 rounded text-lg"
+                  className="
 
-    >
+border
 
-      👥 View Leads
+border-[#353535]
 
-    </Link>
+px-8
 
-  )
+py-4
 
-}
+rounded-2xl
+
+hover:border-[#60899B]
+
+hover:-translate-y-1
+
+transition-all
+
+duration-300
+
+"
+
+                >
+
+                  👥 Leads
+
+                </Link>
+
+              )
+
+            }
 
             <Link
 
               href="/waitlist"
 
-              className="border px-6 py-4 rounded text-lg"
+              className="
+
+border
+
+border-[#353535]
+
+px-8
+
+py-4
+
+rounded-2xl
+
+hover:border-[#60899B]
+
+hover:-translate-y-1
+
+transition-all
+
+duration-300
+
+"
 
             >
 
@@ -143,13 +314,57 @@ export default function Home() {
 
         </section>
 
-        {/* CREATE LEAD */}
+        {/* Lead Form */}
 
-        <section className="mb-24 flex justify-center">
+        <section className="mb-32 flex justify-center">
 
-          <div className="w-full max-w-md">
+          <div
 
-            <h2 className="text-3xl font-bold text-center mb-6">
+            className="
+
+            w-full
+
+            max-w-xl
+
+            bg-[#111111]
+
+            border
+
+            border-[#232323]
+
+            rounded-3xl
+
+            p-10
+
+          "
+
+          >
+
+            <h2
+
+              className="
+
+text-4xl
+
+font-black
+
+text-center
+
+mb-10
+
+bg-gradient-to-r
+
+from-[#60899B]
+
+to-[#285C70]
+
+bg-clip-text
+
+text-transparent
+
+"
+
+            >
 
               🚀 Create a Lead
 
@@ -157,269 +372,169 @@ export default function Home() {
 
             {
 
-  isSignedIn ? (
+              isSignedIn ? (
 
-    <LeadForm />
+                <LeadForm />
 
-  ) : (
+              ) : (
 
-    <div className="border rounded-xl p-8 text-center">
+                <div className="text-center">
 
-      🔐 Sign in to create leads
+                  🔐 Sign in to create leads
 
-    </div>
+                </div>
 
-  )
+              )
 
+            }
+
+          </div>
+
+        </section>
+
+        {/* Features */}
+
+        <section
+
+          className="
+
+          grid
+
+          md:grid-cols-4
+
+          gap-8
+
+          mb-32
+
+        "
+
+        >
+
+          {
+          
+          [
+{
+icon:"🤖",
+title:"AI Scoring",
+
+text:"Score leads automatically."
+},
+
+{
+icon:"📊",
+title:"Analytics",
+
+text:"Track conversions and growth."
+},
+
+{
+icon:"📋",
+title:"Pipeline",
+
+text:"Manage every sales stage."
+},
+
+{
+icon:"👥",
+title:"Team Workspace",
+
+text:"Collaborate with teammates."
+},
+
+{
+icon:"📧",
+title:"Gmail Integration",
+
+text:"Send emails from one place."
+},
+
+{
+icon:"🧠",
+title:"AI Copilot",
+
+text:"Your intelligent sales assistant."
 }
+]
 
-          </div>
+.map((item)=>(
 
-        </section>
+            <div
 
-        {/* FEATURES */}
+              key={item.title}
 
-        <section className="grid md:grid-cols-4 gap-6 mb-24">
+              className="
 
-          <div className="border rounded-xl p-8">
+              bg-[#111111]
 
-            <h2 className="text-2xl font-bold mb-4">
+              border
 
-              🤖 AI Scoring
+              border-[#232323]
 
-            </h2>
+              rounded-3xl
 
-            <p>
+              p-8
 
-              Automatically score every lead.
+              hover:-translate-y-2
 
-            </p>
+hover:border-[#285C70]
 
-          </div>
+transition-all
 
-          <div className="border rounded-xl p-8">
+duration-300
 
-            <h2 className="text-2xl font-bold mb-4">
+            "
 
-              📊 Analytics
+            >
 
-            </h2>
+              <h2 className="text-3xl mb-4">
 
-            <p>
+                {item.icon}
 
-              Visualize business performance instantly.
-
-            </p>
-
-          </div>
-
-          <div className="border rounded-xl p-8">
-
-            <h2 className="text-2xl font-bold mb-4">
-
-              📧 Notifications
-
-            </h2>
-
-            <p>
-
-              Receive email alerts for new leads.
-
-            </p>
-
-          </div>
-
-          <div className="border rounded-xl p-8">
-
-            <h2 className="text-2xl font-bold mb-4">
-
-              📋 Kanban
-
-            </h2>
-
-            <p>
-
-              Organize leads through your sales pipeline.
-
-            </p>
-
-          </div>
-
-        </section>
-
-        {/* BUILT FOR */}
-
-        <section className="mb-24">
-
-          <h2 className="text-4xl font-bold text-center mb-12">
-
-            🎯 Built For
-
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-
-            <div className="border rounded-xl p-8 text-center">
+              </h2>
 
               <h3 className="text-2xl font-bold mb-4">
 
-                📣 Marketing Agencies
+                {item.title}
 
               </h3>
 
-              <p>
+              <p className="text-gray-400">
 
-                Capture and organize incoming client leads.
+                {item.text}
 
               </p>
 
             </div>
 
-            <div className="border rounded-xl p-8 text-center">
-
-              <h3 className="text-2xl font-bold mb-4">
-
-                🧑‍💼 Consultants
-
-              </h3>
-
-              <p>
-
-                Never lose track of potential clients.
-
-              </p>
-
-            </div>
-
-            <div className="border rounded-xl p-8 text-center">
-
-              <h3 className="text-2xl font-bold mb-4">
-
-                💻 Freelancers
-
-              </h3>
-
-              <p>
-
-                Manage leads without spreadsheets.
-
-              </p>
-
-            </div>
-
-          </div>
+          ))}
 
         </section>
 
-        {/* HOW IT WORKS */}
+        {/* Footer */}
 
-        <section className="mb-24">
+        <footer
 
-          <h2 className="text-4xl font-bold text-center mb-12">
+          className="
 
-            ⚡ How It Works
+          border-t
 
-          </h2>
+          border-[#232323]
 
-          <div className="grid md:grid-cols-5 gap-6">
+          pt-10
 
-            <div className="border rounded-xl p-6 text-center">
+          text-center
 
-              <h3 className="text-4xl mb-4">
+          text-gray-500
 
-                1️⃣
+        "
 
-              </h3>
+        >
 
-              <p>Create a Lead</p>
+          SalesPilotAI ©
 
-            </div>
+          {" "}
 
-            <div className="border rounded-xl p-6 text-center">
-
-              <h3 className="text-4xl mb-4">
-
-                2️⃣
-
-              </h3>
-
-              <p>AI Scores It</p>
-
-            </div>
-
-            <div className="border rounded-xl p-6 text-center">
-
-              <h3 className="text-4xl mb-4">
-
-                3️⃣
-
-              </h3>
-
-              <p>Organize in Kanban</p>
-
-            </div>
-
-            <div className="border rounded-xl p-6 text-center">
-
-              <h3 className="text-4xl mb-4">
-
-                4️⃣
-
-              </h3>
-
-              <p>Set Follow-ups</p>
-
-            </div>
-
-            <div className="border rounded-xl p-6 text-center">
-
-              <h3 className="text-4xl mb-4">
-
-                5️⃣
-
-              </h3>
-
-              <p>Close More Clients</p>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* EARLY ACCESS */}
-
-        <section className="mb-24">
-
-          <div className="border rounded-xl p-10 text-center">
-
-            <h2 className="text-4xl font-bold mb-6">
-
-              🚀 Early Access
-
-            </h2>
-
-            <p className="text-xl text-gray-500 mb-6">
-
-              We're currently onboarding our first 10 businesses.
-
-            </p>
-
-            <p>
-
-              Join early and help shape the future of AI-powered sales.
-
-            </p>
-
-          </div>
-
-        </section>
-
-        {/* FOOTER */}
-
-        <footer className="border-t pt-10 text-center text-gray-500">
-
-          LeadsHijack AI © {new Date().getFullYear()}
+          {new Date().getFullYear()}
 
         </footer>
 

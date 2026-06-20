@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -47,6 +46,48 @@ export default function LeadDetailsPage() {
 
     useState("");
 
+  const [message,
+
+    setMessage] =
+
+    useState("");
+
+    const [priority,
+
+  setPriority] =
+
+  useState("");
+
+const [favorite,
+
+  setFavorite] =
+
+  useState(false);
+
+    const [suggestion, setSuggestion] =
+
+  useState("");
+
+const [loadingSuggestion,
+
+  setLoadingSuggestion] =
+
+  useState(false);
+
+    useEffect(() => {
+
+if (!message) return;
+
+const timer = setTimeout(() => {
+
+setMessage("");
+
+}, 3000);
+
+return () => clearTimeout(timer);
+
+}, [message]);
+
   useEffect(() => {
 
     async function fetchLead() {
@@ -87,6 +128,22 @@ export default function LeadDetailsPage() {
 
       );
 
+      setPriority(
+
+  data?.priority ||
+
+  "medium"
+
+);
+
+setFavorite(
+
+  data?.is_favorite ||
+
+  false
+
+);
+
       setLoading(false);
 
     }
@@ -123,6 +180,8 @@ export default function LeadDetailsPage() {
 
     });
 
+    setMessage("✅ Stage updated");
+
   }
 
   async function saveReminder() {
@@ -151,13 +210,17 @@ export default function LeadDetailsPage() {
 
     if (error) {
 
-      alert(error.message);
+      setMessage(error.message);
 
       return;
 
     }
 
-    alert("Reminder saved ✅");
+    setMessage(
+
+      "✅ Reminder saved"
+
+    );
 
   }
 
@@ -181,53 +244,143 @@ export default function LeadDetailsPage() {
 
     if (error) {
 
-      alert(error.message);
+      setMessage(error.message);
 
       return;
 
     }
 
-    alert("Notes saved ✅");
+    setMessage(
+
+      "✅ Notes saved"
+
+    );
 
   }
 
-  async function deleteLead() {
+  async function generateSuggestion() {
 
-    const shouldDelete =
+  if (loadingSuggestion) return;
 
-      confirm(
+  setLoadingSuggestion(true);
 
-        "Delete this lead permanently?"
+  try {
 
-      );
+    const response = await fetch(
 
-    if (!shouldDelete) return;
+      "/api/ai-suggestion",
 
-    const { error } =
+      {
 
-      await supabase
+        method: "POST",
 
-        .from("leads")
+        headers: {
 
-        .delete()
+          "Content-Type":
 
-        .eq("id", params.id)
+            "application/json",
 
-        .eq("user_id", userId);
+        },
 
-    if (error) {
+        body: JSON.stringify({
 
-      alert(error.message);
+          name: lead.name,
 
-      return;
+          company: lead.company,
 
-    }
+          ai_score: lead.ai_score,
 
-    alert("Lead deleted ✅");
+          ai_summary: lead.ai_summary,
 
-    router.push("/leads");
+        }),
+
+      }
+
+    );
+
+    const data =
+
+      await response.json();
+
+    setSuggestion(
+
+      data.suggestion
+
+    );
 
   }
+
+  catch {
+
+    setSuggestion(
+
+      "Unable to generate suggestion."
+
+    );
+
+  }
+
+  setLoadingSuggestion(false);
+
+}
+
+  async function saveLeadSettings() {
+
+  const { error } =
+
+    await supabase
+
+      .from("leads")
+
+      .update({
+
+        priority,
+
+        is_favorite:
+
+          favorite,
+
+      })
+
+      .eq("id", params.id)
+
+      .eq("user_id", userId);
+
+  if (error) {
+
+    setMessage(
+
+      error.message
+
+    );
+
+    return;
+
+  }
+
+  setMessage(
+
+    "✅ Lead updated"
+
+  );
+
+}
+
+async function deleteLead() {
+
+  await supabase
+
+    .from("leads")
+
+    .delete()
+
+    .eq("id", params.id)
+
+    .eq("user_id", userId);
+
+  router.push("/leads");
+
+}
 
   if (loading) {
 
@@ -249,11 +402,7 @@ export default function LeadDetailsPage() {
 
       <main className="min-h-screen flex items-center justify-center">
 
-        <h1 className="text-2xl font-bold">
-
-          🔒 Lead not found
-
-        </h1>
+        Lead not found
 
       </main>
 
@@ -263,259 +412,507 @@ export default function LeadDetailsPage() {
 
   return (
 
-    <main className="min-h-screen p-4 md:p-10">
+    <main className="min-h-screen p-6 md:p-10">
 
-      <h1 className="text-4xl font-bold mb-10">
+      <div className="max-w-5xl mx-auto space-y-8">
 
-        Lead Details
+        {/* Header */}
 
-      </h1>
+        <div>
 
-      <div className="border rounded-xl p-6 space-y-4">
+          <p className="text-[#60899B]">
 
-        <h2 className="text-2xl font-bold">
-
-          {lead.name}
-
-        </h2>
-
-        <p>
-
-          📧 {lead.email}
-
-        </p>
-
-        <p>
-
-          🏢 {lead.company}
-
-        </p>
-
-        <p>
-
-          🟢 Stage:
-
-          {" "}
-
-          {lead.stage}
-
-        </p>
-
-        <p>
-
-          🤖 AI Score:
-
-          {" "}
-
-          {lead.ai_score}/10
-
-        </p>
-
-        <p>
-
-          📝 {lead.ai_summary}
-
-        </p>
-
-        <div className="pt-6">
-
-          <p className="mb-3 font-bold">
-
-            Pipeline Stage
+            Customer Profile
 
           </p>
 
-          <div className="flex gap-3 flex-wrap">
+          <h1
 
-            <button
+className="
 
-              className="border px-4 py-2 rounded"
+text-5xl
 
-              onClick={() =>
+font-black
 
-                updateStage("new")
+bg-gradient-to-r
 
-              }
+from-[#F2EDEA]
+
+via-[#60899B]
+
+to-[#285C70]
+
+bg-clip-text
+
+text-transparent
+
+"
+
+>
+
+            {lead.name}
+
+          </h1>
+
+        </div>
+
+        {/* Notification Bar */}
+
+        {
+
+          message && (
+
+            <div
+
+              className="
+
+bg-[#1C3E4E]
+
+text-white
+
+p-4
+
+rounded-2xl
+
+shadow-xl
+
+animate-pulse
+
+"
 
             >
 
-              🟢 New
+              {message}
 
-            </button>
+            </div>
 
-            <button
+          )
 
-              className="border px-4 py-2 rounded"
+        }
 
-              onClick={() =>
+        {/* Lead Info */}
 
-                updateStage(
+        <div
 
-                  "contacted"
+          className="
+
+          bg-[#111111]
+
+border
+
+border-[#232323]
+
+rounded-3xl
+
+p-8
+
+hover:border-[#285C70]
+
+transition-all
+
+duration-300
+
+hover:-translate-y-1
+
+        "
+
+        >
+
+          <div className="space-y-4">
+
+            <p>
+
+              📧 {lead.email}
+
+            </p>
+
+            <p>
+
+  📞 {lead.phone || "-"}
+
+</p>
+
+            <p>
+
+              🏢 {lead.company}
+
+            </p>
+
+            <p>
+
+              🟢 {lead.stage}
+
+            </p>
+
+            <p>
+
+              🤖 {lead.ai_score}/10
+
+            </p>
+
+            <p>
+
+              📝 {lead.ai_summary}
+
+            </p>
+
+            <div className="flex flex-wrap gap-4 mt-6">
+
+  <a
+
+    href={`tel:${lead.phone}`}
+
+    className="
+
+    bg-[#1C3E4E]
+
+    hover:bg-[#285C70]
+
+    px-5
+
+    py-3
+
+    rounded-2xl
+
+    transition-all
+
+    duration-300
+
+    "
+
+  >
+
+    📞 Call
+
+  </a>
+
+  <a
+
+    href={`mailto:${lead.email}`}
+
+    className="
+
+    bg-[#1C3E4E]
+
+    hover:bg-[#285C70]
+
+    px-5
+
+    py-3
+
+    rounded-2xl
+
+    transition-all
+
+    duration-300
+
+    "
+
+  >
+
+    📧 Email
+
+  </a>
+
+  <a
+
+    href={`https://wa.me/${lead.phone}`}
+
+    target="_blank"
+
+    className="
+
+    bg-[#1C3E4E]
+
+    hover:bg-[#285C70]
+
+    px-5
+
+    py-3
+
+    rounded-2xl
+
+    transition-all
+
+    duration-300
+
+    "
+
+  >
+
+    💬 WhatsApp
+
+  </a>
+
+</div>
+
+          </div>
+
+        </div>
+
+        {/* Stage */}
+
+        <div
+
+          className="
+
+          bg-[#111111]
+
+          border
+
+          border-[#232323]
+
+          rounded-3xl
+
+          p-8
+
+        "
+
+        >
+
+          <h2 className="text-2xl font-bold mb-6">
+
+            Pipeline Stage
+
+          </h2>
+
+          <div className="flex flex-wrap gap-4">
+
+            {["new",
+
+              "contacted",
+
+              "qualified",
+
+              "won",
+
+              "lost"]
+
+              .map((stage)=>(
+
+              <button
+
+                key={stage}
+
+                onClick={()=>
+
+                  updateStage(stage)
+
+                }
+
+                className={`
+
+px-5
+
+py-3
+
+rounded-2xl
+
+transition-all
+
+duration-300
+
+hover:-translate-y-1
+
+${
+
+lead.stage===stage
+
+? "bg-[#1C3E4E] border border-[#60899B]"
+
+: "border border-[#353535] hover:border-[#60899B]"
+
+}
+
+`}
+
+              >
+
+                {stage}
+
+              </button>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* Reminder */}
+
+        <div
+
+          className="
+
+          bg-[#111111]
+
+          border
+
+          border-[#232323]
+
+          rounded-3xl
+
+          p-8
+
+        "
+
+        >
+
+          <h2 className="text-2xl font-bold mb-6">
+
+            📅 Reminder
+
+          </h2>
+
+          <div className="space-y-4">
+
+            <input
+
+              type="date"
+
+              value={followUpDate}
+
+              onChange={(e)=>
+
+                setFollowUpDate(
+
+                  e.target.value
 
                 )
 
               }
 
-            >
+              className="
 
-              🟡 Contacted
+w-full
 
-            </button>
+bg-[#090909]
 
-            <button
+border
 
-              className="border px-4 py-2 rounded"
+border-[#353535]
 
-              onClick={() =>
+p-4
 
-                updateStage(
+rounded-2xl
 
-                  "qualified"
+outline-none
+
+focus:border-[#60899B]
+
+focus:ring-2
+
+focus:ring-[#285C70]/40
+
+transition-all
+
+duration-300
+
+"
+
+            />
+
+            <textarea
+
+              rows={4}
+
+              value={followUpNote}
+
+              onChange={(e)=>
+
+                setFollowUpNote(
+
+                  e.target.value
 
                 )
 
               }
 
-            >
+              className="
 
-              🔵 Qualified
+              w-full
 
-            </button>
+              border
 
-            <button
+              border-[#353535]
 
-              className="border px-4 py-2 rounded"
+              p-4
 
-              onClick={() =>
+              rounded-2xl
 
-                updateStage("won")
+            "
 
-              }
-
-            >
-
-              🟣 Won
-
-            </button>
+            />
 
             <button
 
-              className="border px-4 py-2 rounded"
+              onClick={saveReminder}
 
-              onClick={() =>
+              className="
 
-                updateStage("lost")
+              bg-[#1C3E4E]
 
-              }
+hover:bg-[#285C70]
+
+hover:-translate-y-1
+
+hover:shadow-2xl
+
+transition-all
+
+duration-300
+
+px-6
+
+py-3
+
+rounded-2xl
+
+            "
 
             >
 
-              🔴 Lost
+              Save Reminder
 
             </button>
 
           </div>
 
-          <p className="mt-4">
-
-            Current Stage:
-
-            <strong>
-
-              {" "}
-
-              {lead.stage}
-
-            </strong>
-
-          </p>
-
         </div>
 
-        <div className="mt-10 space-y-4">
+        {/* Notes */}
 
-          <h3 className="text-xl font-bold">
+        <div
 
-            📅 Follow-up Reminder
+          className="
 
-          </h3>
+          bg-[#111111]
 
-          <input
+          border
 
-            type="date"
+          border-[#232323]
 
-            className="border p-3 rounded w-full"
+          rounded-3xl
 
-            value={followUpDate}
+          p-8
 
-            onChange={(e) =>
+        "
 
-              setFollowUpDate(
+        >
 
-                e.target.value
-
-              )
-
-            }
-
-          />
-
-          <textarea
-
-            className="border p-3 rounded w-full"
-
-            rows={4}
-
-            placeholder="Reminder note..."
-
-            value={followUpNote}
-
-            onChange={(e) =>
-
-              setFollowUpNote(
-
-                e.target.value
-
-              )
-
-            }
-
-          />
-
-          <button
-
-            className="border px-4 py-2 rounded"
-
-            onClick={saveReminder}
-
-          >
-
-            💾 Save Reminder
-
-          </button>
-
-        </div>
-
-        <div className="mt-10 space-y-4">
-
-          <h3 className="text-xl font-bold">
+          <h2 className="text-2xl font-bold mb-6">
 
             📝 Notes
 
-          </h3>
+          </h2>
 
           <textarea
 
-            className="border p-3 rounded w-full"
-
-            rows={5}
-
-            placeholder="Add notes..."
+            rows={6}
 
             value={notes}
 
-            onChange={(e) =>
+            onChange={(e)=>
 
               setNotes(
 
@@ -525,29 +922,341 @@ export default function LeadDetailsPage() {
 
             }
 
+            className="
+
+            w-full
+
+            border
+
+            border-[#353535]
+
+            p-4
+
+            rounded-2xl
+
+          "
+
           />
 
           <button
 
-            className="border px-4 py-2 rounded"
-
             onClick={saveNotes}
+
+            className="
+
+            mt-6
+
+            bg-[#1C3E4E]
+
+            px-6
+
+            py-3
+
+            rounded-2xl
+
+          "
 
           >
 
-            💾 Save Notes
+            Save Notes
 
           </button>
 
         </div>
 
-        <div className="mt-10">
+        {/* Priority & Favorite */}
+
+<div
+
+className="
+
+bg-[#111111]
+
+border
+
+border-[#232323]
+
+rounded-3xl
+
+p-8
+
+"
+
+>
+
+<h2
+
+className="
+
+text-2xl
+
+font-bold
+
+mb-6
+
+"
+
+>
+
+⭐ Lead Settings
+
+</h2>
+
+<div className="space-y-6">
+
+<select
+
+value={priority}
+
+onChange={(e)=>
+
+setPriority(
+
+e.target.value
+
+)
+
+}
+
+className="
+
+w-full
+
+bg-[#090909]
+
+border
+
+border-[#353535]
+
+p-4
+
+rounded-2xl
+
+"
+
+>
+
+<option value="low">
+
+🟢 Low
+
+</option>
+
+<option value="medium">
+
+🟡 Medium
+
+</option>
+
+<option value="high">
+
+🔴 High
+
+</option>
+
+</select>
+
+<label
+
+className="
+
+flex
+
+items-center
+
+gap-4
+
+"
+
+>
+
+<input
+
+type="checkbox"
+
+checked={favorite}
+
+onChange={(e)=>
+
+setFavorite(
+
+e.target.checked
+
+)
+
+}
+
+/>
+
+⭐ Favorite Lead
+
+</label>
+
+<button
+
+onClick={saveLeadSettings}
+
+className="
+
+bg-[#1C3E4E]
+
+hover:bg-[#285C70]
+
+px-6
+
+py-3
+
+rounded-2xl
+
+"
+
+>
+
+Save Settings
+
+</button>
+
+</div>
+
+</div>
+
+        {/* AI Suggestion */}
+
+<div
+
+className="
+
+bg-[#111111]
+
+border
+
+border-[#232323]
+
+rounded-3xl
+
+p-8
+
+hover:border-[#285C70]
+
+transition-all
+
+duration-300
+
+"
+
+>
+
+<h2 className="text-2xl font-bold mb-6">
+
+🧠 AI Suggestion
+
+</h2>
+
+{
+
+suggestion && (
+
+<div
+
+className="
+
+bg-[#1A1A1A]
+
+border
+
+border-[#353535]
+
+rounded-2xl
+
+p-5
+
+mb-6
+
+"
+
+>
+
+{suggestion}
+
+</div>
+
+)
+
+}
+
+<button
+
+onClick={generateSuggestion}
+
+disabled={loadingSuggestion}
+
+className="
+
+bg-[#1C3E4E]
+
+hover:bg-[#285C70]
+
+hover:-translate-y-1
+
+hover:shadow-2xl
+
+transition-all
+
+duration-300
+
+px-6
+
+py-3
+
+rounded-2xl
+
+"
+
+>
+
+{
+
+loadingSuggestion
+
+? "Generating..."
+
+: "✨ Generate Suggestion"
+
+}
+
+</button>
+
+</div>
+
+        {/* Delete */}
+
+        <div>
 
           <button
 
-            className="border px-4 py-2 rounded"
-
             onClick={deleteLead}
+
+            className="
+
+            bg-red-600
+
+hover:bg-red-700
+
+hover:-translate-y-1
+
+hover:shadow-2xl
+
+transition-all
+
+duration-300
+
+px-6
+
+py-3
+
+rounded-2xl
+
+          "
 
           >
 
@@ -564,4 +1273,3 @@ export default function LeadDetailsPage() {
   );
 
 }
-

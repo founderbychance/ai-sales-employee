@@ -26,7 +26,9 @@ const isPro =
 
     <main className="min-h-screen flex items-center justify-center">
 
-      <div className="border rounded-xl p-10 text-center">
+      <div className="bg-[#111111]
+border border-[#232323]
+rounded-3xl p-10 text-center">
 
         <h1 className="text-4xl font-bold mb-4">
 
@@ -86,7 +88,9 @@ const isPro =
 
           {/* FREE */}
 
-          <div className="border rounded-xl p-8">
+          <div className="bg-[#111111]
+border border-[#232323]
+rounded-3xl p-8">
 
             <h2 className="text-3xl font-bold mb-6">
 
@@ -134,7 +138,9 @@ const isPro =
 
           {/* PRO */}
 
-          <div className="border rounded-xl p-8 shadow-lg">
+          <div className="bg-[#111111]
+border border-[#232323]
+rounded-3xl p-8 shadow-lg">
 
             <div className="mb-4">
 
@@ -186,7 +192,9 @@ const isPro =
 
           {/* BUSINESS */}
 
-          <div className="border rounded-xl p-8">
+          <div className="bg-[#111111]
+border border-[#232323]
+rounded-3xl p-8">
 
             <h2 className="text-3xl font-bold mb-6">
 
@@ -218,7 +226,7 @@ const isPro =
 
             <a
 
-              href="mailto:forgegroupofficial@gmail.com?subject=LeadsHijack AI Business Plan"
+              href="mailto:forgegroupofficial@gmail.com?subject=SalesPilotAI Business Plan"
 
               className="border px-6 py-3 rounded w-full block text-center"
 

@@ -26,16 +26,15 @@ export default async function BillingPage() {
 
   }
 
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
 
-  .from("profiles")
+    .from("profiles")
 
-  .select("*")
+    .select("*")
 
-  .eq("user_id", userId)
+    .eq("user_id", userId)
 
-  .single();
-
+    .single();
 
   const { data: payments } = await supabase
 
@@ -51,89 +50,413 @@ export default async function BillingPage() {
 
     });
 
+  const currentPlan =
+
+  profile?.plan || "free";
+
+const isPro =
+
+  currentPlan !== "free";
+
   return (
 
-    <main className="min-h-screen p-10">
+    <main className="min-h-screen p-6 md:p-10">
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
 
-        <h1 className="text-5xl font-bold mb-10">
+        {/* Header */}
 
-          💳 Billing
+        <div className="mb-12">
 
-        </h1>
+          <p className="text-[#60899B]">
+
+            Subscription & Payments
+
+          </p>
+
+          <h1
+
+className="
+
+text-5xl
+
+font-black
+
+bg-gradient-to-r
+
+from-[#F2EDEA]
+
+via-[#60899B]
+
+to-[#285C70]
+
+bg-clip-text
+
+text-transparent
+
+"
+
+>
+
+            💳 Billing
+
+          </h1>
+
+        </div>
 
         <div className="space-y-8">
 
           {/* Current Plan */}
 
-          <div className="border rounded-xl p-8">
+          <div
 
-            <h2 className="text-3xl font-bold mb-4">
+            className="
 
-              📦 Current Plan
+            bg-[#111111]
 
-            </h2>
+            border
 
-            <p className="text-2xl">
+            border-[#232323]
 
-  {profile?.plan?.toUpperCase() || "FREE"}
+            rounded-3xl
+
+            p-8
+
+            hover:border-[#285C70]
+
+hover:-translate-y-1
+
+transition-all
+
+duration-300
+
+          "
+
+          >
+
+            <div className="flex justify-between items-center">
+
+              <div>
+
+                <h2 className="text-3xl font-bold mb-4">
+
+                  📦 Current Plan
+
+                </h2>
+
+                <p className="text-3xl font-bold">
+
+  {currentPlan.toUpperCase()}
 
 </p>
 
-            <p className="text-gray-500 mt-2">
+                <p className="text-gray-400 mt-3">
 
-              Lead limit: {profile?.lead_limit ?? 5}
+                  Lead limit:
 
-            </p>
+                  {" "}
 
-          </div>
+                  {profile?.lead_limit ?? 5}
 
-          {/* Upgrade */}
+                </p>
 
-          <div className="border rounded-xl p-8">
+              </div>
 
-            <h2 className="text-3xl font-bold mb-6">
+              {
 
-              🚀 Upgrade
+                isPro && (
 
-            </h2>
+                  <div
 
-            <div className="flex gap-4 flex-wrap">
+                    className="
 
-              <Link
+                    bg-[#1C3E4E]
 
-                href="/upgrade"
+text-[#F2EDEA]
 
-                className="border px-6 py-3 rounded"
+font-bold
 
-              >
+px-5
 
-                View Plans
+py-2
 
-              </Link>
+rounded-full
 
-              <a
+                  "
 
-                href="mailto:forgegroupofficial@gmail.com?subject=LeadsHijack AI Business Plan"
+                  >
 
-                className="border px-6 py-3 rounded"
+                    ⭐ PRO
 
-              >
+                  </div>
 
-                📩 Contact Sales
+                )
 
-              </a>
+              }
 
             </div>
 
           </div>
 
+          {/* Upgrade */}
+
+          {
+
+            !isPro && (
+
+              <div
+
+                className="
+
+                bg-[#111111]
+
+                border
+
+                border-[#232323]
+
+                rounded-3xl
+
+                p-8
+
+                hover:border-[#285C70]
+
+hover:-translate-y-1
+
+transition-all
+
+duration-300
+
+              "
+
+              >
+
+                <h2 className="text-3xl font-bold mb-6">
+
+                  🚀 Upgrade
+
+                </h2>
+
+                <div className="grid md:grid-cols-3 gap-6 mt-6">
+
+  <div
+
+    className="
+
+    bg-[#1A1A1A]
+
+    border
+
+    border-[#353535]
+
+    rounded-2xl
+
+    p-6
+
+  "
+
+  >
+
+    <h3 className="text-2xl font-bold">
+
+      Freelancer
+
+    </h3>
+
+    <p className="text-4xl mt-4">
+
+      ₹499
+
+    </p>
+
+    <p className="text-gray-400">
+
+      /month
+
+    </p>
+
+  </div>
+
+  <div
+
+    className="
+
+    bg-[#1A1A1A]
+
+    border
+
+    border-[#353535]
+
+    rounded-2xl
+
+    p-6
+
+  "
+
+  >
+
+    <h3 className="text-2xl font-bold">
+
+      Team
+
+    </h3>
+
+    <p className="text-4xl mt-4">
+
+      ₹1499
+
+    </p>
+
+    <p className="text-gray-400">
+
+      /month
+
+    </p>
+
+  </div>
+
+  <div
+
+    className="
+
+    bg-[#1A1A1A]
+
+    border
+
+    border-[#353535]
+
+    rounded-2xl
+
+    p-6
+
+  "
+
+  >
+
+    <h3 className="text-2xl font-bold">
+
+      Business
+
+    </h3>
+
+    <p className="text-4xl mt-4">
+
+      ₹3999
+
+    </p>
+
+    <p className="text-gray-400">
+
+      /month
+
+    </p>
+
+  </div>
+
+</div>
+
+                <div className="flex flex-wrap gap-4">
+
+                  <Link
+
+                    href="/upgrade"
+
+                    className="
+
+                    bg-[#1C3E4E]
+
+hover:bg-[#285C70]
+
+hover:-translate-y-1
+
+hover:shadow-2xl
+
+transition-all
+
+duration-300
+
+px-6
+
+py-3
+
+rounded-2xl
+
+                  "
+
+                  >
+
+                    View Plans
+
+                  </Link>
+
+                  <a
+
+                    href="mailto:forgegroupofficial@gmail.com?subject=SalesPilotAI Business Plan"
+
+                    className="
+
+                    border
+
+border-[#353535]
+
+hover:border-[#60899B]
+
+hover:-translate-y-1
+
+transition-all
+
+duration-300
+
+px-6
+
+py-3
+
+rounded-2xl
+
+                  "
+
+                  >
+
+                    📩 Contact Sales
+
+                  </a>
+
+                </div>
+
+              </div>
+
+            )
+
+          }
+
           {/* Payment History */}
 
-          <div className="border rounded-xl p-8">
+          <div
 
-            <h2 className="text-3xl font-bold mb-6">
+            className="
+
+            bg-[#111111]
+
+            border
+
+            border-[#232323]
+
+            rounded-3xl
+
+            p-8
+
+            hover:border-[#285C70]
+
+hover:-translate-y-1
+
+transition-all
+
+duration-300
+
+          "
+
+          >
+
+            <h2 className="text-3xl font-bold mb-8">
 
               🧾 Payment History
 
@@ -143,59 +466,111 @@ export default async function BillingPage() {
 
               payments?.length ? (
 
-                <div className="space-y-4">
+                <div className="space-y-5">
 
-                  {payments.map((payment: any) => (
+                  {
 
-                    <div
+                    payments.map(
 
-                      key={payment.id}
+                      (payment: any) => (
 
-                      className="border rounded-lg p-4"
+                        <div
 
-                    >
+                          key={payment.id}
 
-                      <p>
+                          className="
 
-  💰 ₹{payment.amount}
+                          bg-[#1A1A1A]
 
-</p>
+border
 
-<p>
+border-[#353535]
 
-  📌 {payment.status.toUpperCase()}
+rounded-2xl
 
-</p>
+p-6
 
-<p>
+hover:border-[#60899B]
 
-  📅 {new Date(
+hover:-translate-y-1
 
-    payment.created_at
+transition-all
 
-  ).toLocaleDateString()}
+duration-300
 
-</p>
+                        "
 
-<p>
+                        >
 
-  🆔 {payment.razorpay_payment_id}
+                          <div className="space-y-2">
 
-</p>
+                            <p>
 
-                    </div>
+                              💰 ₹{payment.amount}
 
-                  ))}
+                            </p>
+
+                            <p>
+
+                              📌 {payment.status.toUpperCase()}
+
+                            </p>
+
+                            <p>
+
+                              📅 {new Date(
+
+                                payment.created_at
+
+                              ).toLocaleDateString()}
+
+                            </p>
+
+                            <p>
+
+                              🆔 {payment.razorpay_payment_id}
+
+                            </p>
+
+                          </div>
+
+                        </div>
+
+                      )
+
+                    )
+
+                  }
 
                 </div>
 
               ) : (
 
-                <p>
+                <div
+
+                  className="
+
+                  border
+
+                  border-dashed
+
+                  border-[#353535]
+
+                  rounded-2xl
+
+                  p-10
+
+                  text-center
+
+                  text-gray-500
+
+                "
+
+                >
 
                   No payments yet
 
-                </p>
+                </div>
 
               )
 

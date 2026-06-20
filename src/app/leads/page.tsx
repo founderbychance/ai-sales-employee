@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import Link from "next/link";
+
 import { useAuth } from "@clerk/nextjs";
+
 import { supabase } from "@/lib/supabase";
 
 export default function LeadsPage() {
@@ -47,15 +50,27 @@ export default function LeadsPage() {
 
     const matchesSearch =
 
-      lead.name
-        ?.toLowerCase()
-        .includes(search.toLowerCase())
+  lead.name
+    ?.toLowerCase()
+    .includes(search.toLowerCase())
 
-      ||
+  ||
 
-      lead.company
-        ?.toLowerCase()
-        .includes(search.toLowerCase());
+  lead.company
+    ?.toLowerCase()
+    .includes(search.toLowerCase())
+
+  ||
+
+  lead.phone
+    ?.toLowerCase()
+    .includes(search.toLowerCase())
+
+  ||
+
+  lead.email
+    ?.toLowerCase()
+    .includes(search.toLowerCase());
 
     if (!matchesSearch) {
 
@@ -89,33 +104,113 @@ export default function LeadsPage() {
 
   return (
 
-    <main className="min-h-screen p-10">
+    <main className="min-h-screen p-6 md:p-10">
 
-      <div className="flex justify-between items-center mb-10">
+      {/* Header */}
 
-        <h1 className="text-4xl font-bold">
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-6 mb-10">
 
-          Leads
+        <div>
 
-        </h1>
+          <p className="text-[#60899B]">
 
-        <Link
+            CRM Workspace
 
-  href="/api/export"
+          </p>
 
-  className="border px-4 py-2 rounded hover:bg-gray-100"
+          <h1
+
+className="
+
+text-5xl
+
+font-black
+
+bg-gradient-to-r
+
+from-[#F2EDEA]
+
+via-[#60899B]
+
+to-[#285C70]
+
+bg-clip-text
+
+text-transparent
+
+"
 
 >
 
-  ⬇️ Export CSV
+            Leads ({filteredLeads.length})
 
-</Link>
+          </h1>
+
+        </div>
+
+        <Link
+
+          href="/api/export"
+
+         className="
+
+bg-[#1C3E4E]
+
+hover:bg-[#285C70]
+
+hover:-translate-y-1
+
+hover:shadow-2xl
+
+transition-all
+
+duration-300
+
+px-6
+
+py-3
+
+rounded-2xl
+
+"
+
+        >
+
+          ⬇️ Export CSV
+
+        </Link>
 
       </div>
 
+      {/* Search */}
+
       <input
 
-        className="border p-3 rounded w-full mb-8"
+        className="
+
+w-full
+
+bg-[#111111]
+
+border
+
+border-[#232323]
+
+focus:border-[#60899B]
+
+outline-none
+
+rounded-3xl
+
+p-5
+
+mb-8
+
+transition-all
+
+duration-300
+
+"
 
         placeholder="🔍 Search leads..."
 
@@ -129,119 +224,235 @@ export default function LeadsPage() {
 
       />
 
-      <div className="flex gap-3 mb-8">
+      {/* Filters */}
 
-        <button
+      <div className="flex flex-wrap gap-4 mb-10">
 
-          className="border px-4 py-2 rounded"
+        {[
 
-          onClick={() => setFilter("all")}
+          {
 
-        >
+            label:"All",
 
-          All
+            value:"all"
 
-        </button>
+          },
 
-        <button
+          {
 
-          className="border px-4 py-2 rounded"
+            label:"⭐ High",
 
-          onClick={() => setFilter("high")}
+            value:"high"
 
-        >
+          },
 
-          ⭐ High
+          {
 
-        </button>
+            label:"🟡 Medium",
 
-        <button
+            value:"medium"
 
-          className="border px-4 py-2 rounded"
+          },
 
-          onClick={() => setFilter("medium")}
+          {
 
-        >
+            label:"🔴 Low",
 
-          🟡 Medium
+            value:"low"
 
-        </button>
+          }
 
-        <button
+        ].map((item)=>(
 
-          className="border px-4 py-2 rounded"
+          <button
 
-          onClick={() => setFilter("low")}
+            key={item.value}
 
-        >
+            onClick={()=>
 
-          🔴 Low
+              setFilter(item.value)
 
-        </button>
+            }
 
-      </div>
+            className={`
 
-      <div className="space-y-4">
+px-5
 
-  {
+py-3
 
-    filteredLeads.length === 0 ? (
+rounded-2xl
 
-      <div className="border rounded-xl p-10 text-center">
+transition-all
 
-        No leads found.
+duration-300
 
-      </div>
+hover:-translate-y-1
 
-    ) : (
+${
 
-      filteredLeads.map((lead) => (
+filter===item.value
 
-          <Link
+? "bg-[#1C3E4E] border border-[#60899B]"
 
-            key={lead.id}
-
-            href={`/leads/${lead.id}`}
-
-          >
-
-            <div
-
-              className="border p-4 rounded-lg space-y-2 hover:bg-gray-100 cursor-pointer"
-
-            >
-
-              <h2 className="font-bold text-xl">
-
-                {lead.name}
-
-              </h2>
-
-              <p>📧 {lead.email}</p>
-
-              <p>🏢 {lead.company}</p>
-
-              <p>🟢 Status: {lead.status}</p>
-
-              <p>
-
-                 🤖 AI Score:
-
-                {lead.ai_score ?? 0}/10
-
-              </p>
-
-            </div>
-
-          </Link>
-
-        ))
-
-)
+: "border border-[#353535] hover:border-[#60899B]"
 
 }
 
-</div>
+`}
+
+          >
+
+            {item.label}
+
+          </button>
+
+        ))}
+
+      </div>
+
+      {/* Leads */}
+
+      <div className="space-y-6">
+
+        {
+
+          filteredLeads.length === 0 ? (
+
+            <div
+
+              className="
+
+              bg-[#111111]
+
+              border
+
+              border-[#232323]
+
+              rounded-3xl
+
+              p-16
+
+              text-center
+
+            "
+
+            >
+
+              <h2 className="text-3xl mb-4">
+
+                📭
+
+              </h2>
+
+              <p className="text-[#60899B]">
+
+No leads found
+
+</p>
+
+            </div>
+
+          ) : (
+
+            filteredLeads.map((lead)=>(
+
+              <Link
+
+                key={lead.id}
+
+                href={`/leads/${lead.id}`}
+
+              >
+
+                <div
+
+                  className="
+
+                  bg-[#111111]
+
+                  border
+
+                  border-[#232323]
+
+                  rounded-3xl
+
+                  p-8
+
+                  hover:-translate-y-1
+
+hover:border-[#285C70]
+
+hover:shadow-2xl
+
+transition-all
+
+duration-300
+
+cursor-pointer
+
+                "
+
+                >
+
+                  <div className="flex flex-col md:flex-row md:justify-between gap-6">
+
+                    <div>
+
+                      <h2 className="text-3xl font-bold">
+
+                        {lead.name}
+
+                      </h2>
+
+                      <p className="mt-3">
+
+                        📧 {lead.email}
+
+                      </p>
+
+                      <p>
+
+                        🏢 {lead.company}
+
+                      </p>
+
+                      <p>
+
+  📞 {lead.phone || "-"}
+
+</p>
+
+                    </div>
+
+                    <div className="space-y-3">
+
+                      <p>
+
+                        🟢 {lead.stage}
+
+                      </p>
+
+                      <p>
+
+                        🤖 {lead.ai_score ?? 0}/10
+
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </Link>
+
+            ))
+
+          )
+
+        }
+
+      </div>
 
     </main>
 

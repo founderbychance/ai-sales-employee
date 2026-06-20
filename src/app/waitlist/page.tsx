@@ -72,7 +72,7 @@ export default function WaitlistPage() {
 
         <p className="text-center text-gray-500 mb-10">
 
-          Get early access to LeadsHijack AI Pro.
+          Get early access to SalesPilotAI Pro.
 
         </p>
 

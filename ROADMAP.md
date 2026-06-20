@@ -1,4 +1,4 @@
-# LeadsHijack AI
+# SalesPilotAI
 
 ## Core Features ✅
 

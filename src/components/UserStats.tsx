@@ -4,7 +4,9 @@ export default function UserStats() {
 
   return (
 
-    <div className="border rounded-xl p-6">
+    <div className="bg-[#111111]
+border border-[#232323]
+rounded-3xl p-6">
 
       <h2 className="text-2xl font-bold mb-4">
 

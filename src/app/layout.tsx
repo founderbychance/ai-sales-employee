@@ -1,19 +1,38 @@
+import MobileNav from "@/components/MobileNav";
+
+import Sidebar from "@/components/Sidebar";
+
 import Script from "next/script";
+
 import type { Metadata } from "next";
+
 import Link from "next/link";
+
+import HamburgerMenu from "@/components/HamburgerMenu";
+
 import { ClerkProvider } from "@clerk/nextjs";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LeadsHijack AI",
-  description: "AI-powered lead qualification platform",
+
+  title: "SalesPilotAI",
+
+  description:
+
+    "AI-powered lead qualification platform",
+
 };
 
 export default function RootLayout({
+
   children,
-}: Readonly<{
+
+}: {
+
   children: React.ReactNode;
-}>) {
+
+}) {
 
   return (
 
@@ -21,87 +40,233 @@ export default function RootLayout({
 
       <html lang="en">
 
-        <body className="bg-white text-black">
+        <body className="bg-[#0A0F14] text-[#F2EDEA] min-h-screen overflow-x-hidden">
 
           <Script
 
-              src="https://checkout.razorpay.com/v1/checkout.js"
+            src="https://checkout.razorpay.com/v1/checkout.js"
 
           />
 
-          <nav className="border-b p-5">
+          {/* Background */}
 
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <div className="fixed inset-0 -z-10 overflow-hidden">
 
-              <h1 className="font-bold text-2xl">
+            <div className="absolute top-20 left-20 h-96 w-96 rounded-full bg-[#1C3E4E]/20 blur-[120px]" />
 
-                LeadsHijack AI
+            <div className="absolute bottom-20 right-20 h-96 w-96 rounded-full bg-[#285C70]/20 blur-[120px]" />
 
-              </h1>
+          </div>
 
-              <div className="flex flex-wrap gap-4 md:gap-8">
+          {/* Navbar */}
 
-                <Link
-                  href="/"
-                  className="hover:underline"
+          <div
+
+className="
+
+hidden
+
+sticky
+
+top-0
+
+z-50
+
+px-4
+
+py-4
+
+"
+
+>
+
+            <nav className="max-w-7xl mx-auto">
+
+              <div
+
+                className="
+
+                flex
+
+                flex-col
+
+                md:flex-row
+
+                md:items-center
+
+                md:justify-between
+
+                gap-4
+
+                px-8
+
+                py-5
+
+                rounded-3xl
+
+                border
+
+                border-[#353535]
+
+                bg-[#111111]/80
+
+                backdrop-blur-xl
+
+                shadow-2xl
+
+              "
+
+              >
+
+                {/* Logo */}
+
+                <h1
+
+                  className="
+
+                  text-3xl
+
+                  font-black
+
+                  tracking-tight
+
+                  bg-gradient-to-r
+
+                  from-[#60899B]
+
+                  to-[#285C70]
+
+                  bg-clip-text
+
+                  text-transparent
+
+                "
+
                 >
 
-                  🏠 Home
+                  SalesPilotAI
 
-                </Link>
+                </h1>
 
-                <Link
-                  href="/dashboard"
-                  className="hover:underline"
+                {/* Navigation */}
+
+                <div
+
+                  className="
+
+                  flex
+
+                  flex-wrap
+
+                  items-center
+
+                  gap-4
+
+                  md:gap-6
+
+                  text-sm
+
+                  font-medium
+
+                "
+
                 >
 
-                  📊 Dashboard
+                  <Link
 
-                </Link>
+                    href="/"
 
-                <Link
-                  href="/leads"
-                  className="hover:underline"
-                >
+                    className="
 
-                  👥 Leads
+                    text-[#A7B0B7]
 
-                </Link>
+                    hover:text-[#60899B]
 
-                <Link
-                  href="/kanban"
-                  className="hover:underline"
-                >
+                    transition-all
 
-                  📋 Kanban
+                  "
 
-                </Link>
+                  >
 
-                <Link href="/admin">
+                    🏠 Home
 
-                  🛠️ Admin
+                  </Link>
 
-                </Link>
+                  <Link
 
-                <Link href="/settings">
+                    href="/dashboard"
 
-                  ⚙️ Settings
+                    className="
 
-                </Link>
+                    text-[#A7B0B7]
 
-                <Link href="/billing">
+                    hover:text-[#60899B]
 
-                  💳 Billing
+                    transition-all
 
-                </Link>
+                  "
+
+                  >
+
+                    📊 Dashboard
+
+                  </Link>
+
+                  <Link
+
+                    href="/leads"
+
+                    className="
+
+                    text-[#A7B0B7]
+
+                    hover:text-[#60899B]
+
+                    transition-all
+
+                  "
+
+                  >
+
+                    👥 Leads
+
+                  </Link>
+
+                  <HamburgerMenu />
+
+                </div>
 
               </div>
 
-            </div>
+            </nav>
 
-          </nav>
+          </div>
 
-          {children}
+          <div className="flex">
+
+  <Sidebar />
+
+  <main
+
+    className="
+
+    flex-1
+
+    xl:ml-72
+
+    pb-24
+
+  "
+
+  >
+
+    {children}
+
+  </main>
+
+</div>
+
+          <MobileNav />
 
         </body>
 

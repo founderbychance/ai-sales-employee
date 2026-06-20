@@ -16,13 +16,21 @@ import {
 
 } from "recharts";
 
+type Lead = {
+
+  name: string;
+
+  ai_score?: number;
+
+};
+
 export default function LeadsChart({
 
   data,
 
 }: {
 
-  data: any[];
+  data: Lead[];
 
 }) {
 
@@ -59,12 +67,10 @@ export default function LeadsChart({
         <BarChart
 
   data={[...data].sort(
-
-    (a, b) =>
-
-      b.ai_score - a.ai_score
-
-  )}
+  (a, b) =>
+    (b.ai_score || 0) -
+    (a.ai_score || 0)
+)}
 
 >
 
@@ -86,17 +92,22 @@ export default function LeadsChart({
 
           <Tooltip
 
-  formatter={(value) => [
+formatter={(value) => [
 
-    `${value}/10`,
+`${Number(value ?? 0)}/10`,
 
-    "AI Score",
+"AI Score",
 
-  ]}
+]}
 
 />
 
-          <Bar dataKey="ai_score" />
+
+          <Bar
+  dataKey="ai_score"
+  fill="#60899B"
+  radius={[8, 8, 0, 0]}
+/>
 
         </BarChart>
 

@@ -1,139 +1,143 @@
+import KanbanBoard from "@/components/KanbanBoard";
+
 import { supabase } from "@/lib/supabase";
+
 import { auth } from "@clerk/nextjs/server";
 
 export default async function KanbanPage() {
 
+  const { userId } = await auth();
 
+  if (!userId) {
 
-const { userId } = await auth();
+    return (
 
-if (!userId) {
+      <main className="min-h-screen flex items-center justify-center">
 
-  return (
+        <h1 className="text-3xl font-bold">
 
-    <main className="min-h-screen flex items-center justify-center">
+          🔒 Please sign in
 
-      <h1 className="text-3xl font-bold">
+        </h1>
 
-        🔒 Please sign in
+      </main>
 
-      </h1>
+    );
 
-    </main>
+  }
 
-  );
+  const { data } = await supabase
 
-}
+    .from("leads")
 
-const { data } = await supabase
+    .select("*")
 
-  .from("leads")
+    .eq("user_id", userId)
 
-  .select("*")
+    .order("created_at", {
 
-  .eq("user_id", userId)
+      ascending: false,
 
-  .order("created_at", {
+    });
 
-    ascending: false,
-
-  });
-
-  const leads = data || [];
+  const leads = data ?? [];
 
   const stages = [
 
-    "new",
+    {
 
-    "contacted",
+      id: "new",
 
-    "qualified",
+      title: "🟢 New",
 
-    "won",
+    },
 
-    "lost",
+    {
+
+      id: "contacted",
+
+      title: "🟡 Contacted",
+
+    },
+
+    {
+
+      id: "qualified",
+
+      title: "🔵 Qualified",
+
+    },
+
+    {
+
+      id: "won",
+
+      title: "🟣 Won",
+
+    },
+
+    {
+
+      id: "lost",
+
+      title: "🔴 Lost",
+
+    },
 
   ];
 
   return (
 
-    <main className="min-h-screen p-10">
+    <main className="min-h-screen p-6 md:p-10">
 
-      <h1 className="text-4xl font-bold mb-10">
+      {/* Header */}
 
-        📋 Kanban Board
+      <div className="mb-12">
 
-      </h1>
+        <p className="text-[#60899B]">
 
-      <div className="grid md:grid-cols-5 gap-6">
+          Sales Pipeline
 
-        {stages.map((stage) => (
+        </p>
 
-          <div
+        <h1
 
-            key={stage}
+className="
 
-            className="border rounded-xl p-4"
+text-5xl
 
-          >
+font-black
 
-            <h2 className="font-bold text-xl mb-4 capitalize">
+bg-gradient-to-r
 
-              {stage}
+from-[#F2EDEA]
 
-            </h2>
+via-[#60899B]
 
-            <div className="space-y-3">
+to-[#285C70]
 
-              {leads
+bg-clip-text
 
-                .filter(
+text-transparent
 
-                  (lead) =>
+"
 
-                    lead.stage === stage
+>
 
-                )
+          📋 Kanban Board
 
-                .map((lead) => (
-
-                  <div
-
-                    key={lead.id}
-
-                    className="border rounded-lg p-3"
-
-                  >
-
-                    <h3 className="font-bold">
-
-                      {lead.name}
-
-                    </h3>
-
-                    <p>
-
-🏢 {lead.company}
-
-                    </p>
-
-                    <p>
-
-🤖 {lead.ai_score ?? 0}/10
-
-</p>
-
-                  </div>
-
-                ))}
-
-            </div>
-
-          </div>
-
-        ))}
+        </h1>
 
       </div>
+
+      <KanbanBoard
+
+stages={stages}
+
+leads={leads}
+
+/>
+
 
     </main>
 

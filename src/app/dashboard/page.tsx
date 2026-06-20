@@ -1,3 +1,5 @@
+import AICopilot from "@/components/AICopilot";
+
 import { supabase } from "@/lib/supabase";
 
 import LeadsChart from "@/components/LeadsChart";
@@ -6,51 +8,83 @@ import { auth } from "@clerk/nextjs/server";
 
 import Link from "next/link";
 
+import { redirect }
+
+from "next/navigation";
+
 export default async function Dashboard() {
 
-  
+  const { userId } = await auth();
 
-const { userId } = await auth();
+  if (!userId) {
 
-if (!userId) {
+    return (
 
-  return (
+      <main className="min-h-screen flex items-center justify-center">
 
-    <main className="min-h-screen flex items-center justify-center">
+        <h1 className="text-3xl font-bold">
 
-      <h1 className="text-3xl font-bold">
+          🔒 Please sign in
 
-        🔒 Please sign in
+        </h1>
 
-      </h1>
+      </main>
 
-    </main>
+    );
+
+  }
+
+  const { data } = await supabase
+
+    .from("leads")
+
+    .select("*")
+
+    .eq("user_id", userId);
+
+  const { data: profile } = await supabase
+
+    .from("profiles")
+
+    .select("*")
+
+    .eq("user_id", userId)
+
+    .single();
+
+    const { data: workspace } =
+
+    
+
+  await supabase
+
+    .from("workspaces")
+
+    .select("*")
+
+    .eq(
+
+      "owner_id",
+
+      userId
+
+    )
+
+    .single();
+
+    if (!workspace) {
+
+  redirect(
+
+    "/workspace-onboarding"
 
   );
 
 }
 
-const { data } = await supabase
+  const isPro =
 
-  .from("leads")
-
-  .select("*")
-
-  .eq("user_id", userId);
-
-const { data: profile } = await supabase
-
-  .from("profiles")
-
-  .select("*")
-
-  .eq("user_id", userId)
-
-  .single();
-
-const isPro =
-
-  profile?.plan === "pro";
+    profile?.plan === "pro";
 
   const leads = data || [];
 
@@ -58,7 +92,7 @@ const isPro =
 
   const leadLimit =
 
-  profile?.lead_limit || 5;
+    profile?.lead_limit || 5;
 
   const remainingLeads = Math.max(
 
@@ -92,11 +126,123 @@ const isPro =
 
   ).length;
 
+  const estimatedDealValue = 10000;
+
+const estimatedRevenue =
+
+  wonLeads *
+
+  estimatedDealValue;
+
   const lostLeads = leads.filter(
 
     (lead) => lead.stage === "lost"
 
   ).length;
+
+  const favoriteLeads = leads.filter(
+
+    (lead) => lead.is_favorite
+
+  ).length;
+
+  const highPriorityLeads = leads.filter(
+
+    (lead) =>
+
+      lead.priority === "high"
+
+  ).length;
+
+  const upcomingFollowUps = leads.filter(
+
+  (lead) =>
+
+    lead.follow_up_date
+
+).length;
+
+const todayTasks = [];
+
+for (const lead of leads) {
+
+  if (lead.priority === "high") {
+
+    todayTasks.push(
+
+      `⭐ Prioritize ${lead.name}`
+
+    );
+
+  }
+
+  if (lead.follow_up_date) {
+
+    todayTasks.push(
+
+      `📅 Follow up with ${lead.company}`
+
+    );
+
+  }
+
+}
+
+const tasks =
+
+  todayTasks.slice(0, 4);
+
+  const recommendations = [];
+
+for (const lead of leads) {
+
+  if ((lead.ai_score || 0) >= 8) {
+
+    recommendations.push(
+
+      `🔥 Contact ${lead.company}`
+
+    );
+
+  }
+
+  else if (
+
+    (lead.ai_score || 0) >= 5
+
+  ) {
+
+    recommendations.push(
+
+      `📧 Send email to ${lead.company}`
+
+    );
+
+  }
+
+  if (lead.is_favorite) {
+
+    recommendations.push(
+
+      `⭐ ${lead.company} has high potential`
+
+    );
+
+  }
+
+}
+
+const aiRecommendations =
+
+recommendations.slice(0,4);
+
+const riskyLeads = leads.filter(
+
+(lead)=>
+
+(lead.ai_score || 0) <= 3
+
+).length;
 
   const recentLeads = [...leads]
 
@@ -142,15 +288,33 @@ const isPro =
 
     : 0;
 
+    const leadHealth =
+
+  averageScore >= 8
+
+    ? "🔥 Excellent"
+
+    : averageScore >= 6
+
+    ? "🟢 Good"
+
+    : averageScore >= 4
+
+    ? "🟡 Average"
+
+    : "🔴 Poor";
+
   const bestLead = leads.length
 
     ? leads.reduce(
 
         (best, current) =>
 
-          current.ai_score >
+          (current.ai_score || 0)
 
-          best.ai_score
+          >
+
+          (best.ai_score || 0)
 
             ? current
 
@@ -160,294 +324,780 @@ const isPro =
 
     : null;
 
+    const hour =
+
+  new Date()
+
+  .getHours();
+
+const greeting =
+
+  hour < 12
+
+  ? "Good Morning"
+
+  : hour < 18
+
+  ? "Good Afternoon"
+
+  : "Good Evening";
+
   return (
 
-    <main className="min-h-screen p-4 md:p-10">
+    <main
 
-      <div className="flex flex-col md:flex-row justify-between md:items-center gap-6 mb-10">
+className="
+
+min-h-screen
+
+p-6
+
+lg:p-10
+
+max-w-7xl
+
+mx-auto
+
+"
+
+>
+
+      {/* Header */}
+
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-8 mb-12">
 
         <div>
 
-  <h1 className="text-4xl font-bold">
+          <p className="text-[#60899B] mb-2">
 
-    📊 Dashboard
+            {greeting} 👋
+          </p>
 
-  </h1>
+          <h1
 
-  {
+            className="
 
-  isPro && (
+            text-5xl
 
-    <div className="mt-2">
+            font-black
 
-      <span
+            bg-gradient-to-r
 
-        className="border rounded-full px-4 py-1"
+            from-[#F2EDEA]
 
-      >
+            via-[#60899B]
 
-        ⭐ PRO USER
+            to-[#285C70]
 
-      </span>
+            bg-clip-text
 
-    </div>
+            text-transparent
 
-  )
+          "
 
-}
+          >
 
-</div>
+            Dashboard
+
+          </h1>
+
+          {
+
+            isPro && (
+
+              <div className="mt-4">
+
+                <span
+
+                  className="
+
+                  bg-[#1C3E4E]
+
+                  px-5
+
+                  py-2
+
+                  rounded-full
+
+                  text-sm
+
+                  shadow-lg
+
+                "
+
+                >
+
+                  ⭐ PRO USER
+
+                </span>
+
+              </div>
+
+            )
+
+          }
+
+        </div>
 
         <div className="flex flex-wrap gap-4">
 
           <Link
 
-  href="/"
+            href="/leads"
 
-  className="border px-4 py-2 rounded"
+            className="
 
->
+            bg-[#1C3E4E]
 
-  ➕ Add Lead
+            hover:bg-[#285C70]
 
-</Link>
+            hover:-translate-y-1
+
+            transition-all
+
+            duration-300
+
+            hover:shadow-2xl
+
+            px-5
+
+            py-3
+
+            rounded-2xl
+
+          "
+
+          >
+
+            ➕ Add Lead
+
+          </Link>
 
           <Link
 
-  href="/leads"
+            href="/leads"
 
-  className="border px-4 py-2 rounded"
+            className="
 
->
+            border
 
-  👥 Leads
+            border-[#353535]
 
-</Link>
+            hover:border-[#60899B]
+
+            hover:-translate-y-1
+
+            transition-all
+
+            duration-300
+
+            px-5
+
+            py-3
+
+            rounded-2xl
+
+          "
+
+          >
+
+            👥 Leads
+
+          </Link>
 
           <Link
 
-  href="/kanban"
+            href="/kanban"
 
-  className="border px-4 py-2 rounded"
+            className="
 
->
+            border
 
-  📋 Kanban
+            border-[#353535]
 
-</Link>
+            hover:border-[#60899B]
+
+            hover:-translate-y-1
+
+            transition-all
+
+            duration-300
+
+            px-5
+
+            py-3
+
+            rounded-2xl
+
+          "
+
+          >
+
+            📋 Kanban
+
+          </Link>
 
         </div>
 
       </div>
 
-      {/* Usage Counter */}
-
-      <div className="border rounded-xl p-8 mb-8">
-
-        <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
-
-          <div>
-
-            <h2 className="text-2xl font-bold">
-
-              📦 {(profile?.plan || "free").toUpperCase()} PLAN
-
-            </h2>
-
-            <p className="text-gray-500 mt-2">
-
-              {totalLeads} / {leadLimit}
-
-              {" "}leads used
-
-            </p>
-
-            <p className="mt-2">
-
-              {remainingLeads}
-
-              {" "}leads remaining
-
-            </p>
-
-          </div>
-
-          {
-
-  !isPro && (
-
-    <Link
-
-  href="/upgrade"
-
-  className="border px-4 py-2 rounded"
-
->
-
-  🚀 Upgrade
-
-</Link>
-
-  )
-
-}
-        </div>
-
-      </div>
+      
 
       {/* Main Stats */}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <div
 
-        <div className="border rounded-xl p-8 shadow">
+className="
 
-          <p className="text-gray-500">
+grid
 
-            Total Leads
+grid-cols-1
 
-          </p>
+sm:grid-cols-2
 
-          <h2 className="text-5xl font-bold mt-4">
+xl:grid-cols-3
 
-            {totalLeads}
+gap-6
 
-          </h2>
+"
 
-        </div>
+>
 
-        <div className="border rounded-xl p-8 shadow">
+        {
+        
+        [
 
-          <p className="text-gray-500">
+{
 
-            New Leads
+title:"Total Leads",
 
-          </p>
+value:totalLeads
 
-          <h2 className="text-5xl font-bold mt-4">
+},
 
-            {newLeads}
+{
 
-          </h2>
+title:"⭐ Favorites",
 
-        </div>
+value:favoriteLeads
 
-        <div className="border rounded-xl p-8 shadow">
+},
 
-          <p className="text-gray-500">
+{
 
-            Average AI Score
+title:"🔥 High Priority",
 
-          </p>
+value:highPriorityLeads
 
-          <h2 className="text-5xl font-bold mt-4">
+},
 
-            {averageScore}/10
+{
 
-          </h2>
+title:"📅 Follow Ups",
 
-        </div>
+value:upcomingFollowUps
 
-        <div className="border rounded-xl p-8 shadow">
+},
 
-          <p className="text-gray-500">
+{
 
-            🥇 Best Lead
+title:"💰 Revenue",
 
-          </p>
+value:`₹${estimatedRevenue}`
 
-          <h2 className="text-2xl font-bold mt-4">
+},
 
-            {
+{
 
-              bestLead
+title:"🥇 Best Lead",
 
-                ? bestLead.name
+value:bestLead
 
-                : "No Leads"
+? bestLead.name
 
-            }
+: "No Leads"
 
-          </h2>
+}
 
-        </div>
+]
+
+.map((card)=>(
+
+          <div
+
+            key={card.title}
+
+            className="
+
+            bg-[#111111]
+
+            border
+
+            border-[#232323]
+
+            rounded-3xl
+
+            p-8
+
+            hover:-translate-y-2
+
+            hover:border-[#285C70]
+
+            transition-all
+
+            duration-300
+
+          "
+
+          >
+
+            <p className="text-gray-400">
+
+              {card.title}
+
+            </p>
+
+            <h2 className="text-4xl font-bold mt-4">
+
+              {card.value}
+
+            </h2>
+
+          </div>
+
+        ))}
 
       </div>
 
+      <div
+
+className="
+
+grid
+
+md:grid-cols-2
+
+gap-8
+
+mt-10
+
+"
+
+>
+
+<div
+
+className="
+
+bg-[#111111]
+
+border
+
+border-[#232323]
+
+rounded-3xl
+
+p-8
+
+"
+
+>
+
+<p>
+
+📊 Lead Health
+
+</p>
+
+<h2
+
+className="
+
+text-4xl
+
+font-bold
+
+mt-4
+
+"
+
+>
+
+{leadHealth}
+
+</h2>
+
+</div>
+
+<div
+
+className="
+
+bg-[#111111]
+
+border
+
+border-[#232323]
+
+rounded-3xl
+
+p-8
+
+"
+
+>
+
+<p>
+
+⚠️ Risky Leads
+
+</p>
+
+<h2
+
+className="
+
+text-4xl
+
+font-bold
+
+mt-4
+
+"
+
+>
+
+{riskyLeads}
+
+</h2>
+
+</div>
+
+</div>
       {/* Pipeline */}
 
-      <div className="grid md:grid-cols-4 gap-6 mt-8">
+      <div className="grid md:grid-cols-4 gap-6 mt-10">
 
-        <div className="border rounded-xl p-6">
+        {[
 
-          <p>
+          {
 
-            🟡 Contacted
+            icon:"🟡",
 
-          </p>
+            title:"Contacted",
 
-          <h2 className="text-4xl font-bold">
+            value:contactedLeads
 
-            {contactedLeads}
+          },
 
-          </h2>
+          {
 
-        </div>
+            icon:"🔵",
 
-        <div className="border rounded-xl p-6">
+            title:"Qualified",
 
-          <p>
+            value:qualifiedLeads
 
-            🔵 Qualified
+          },
 
-          </p>
+          {
 
-          <h2 className="text-4xl font-bold">
+            icon:"🟣",
 
-            {qualifiedLeads}
+            title:"Won",
 
-          </h2>
+            value:wonLeads
 
-        </div>
+          },
 
-        <div className="border rounded-xl p-6">
+          {
 
-          <p>
+            icon:"🔴",
 
-            🟣 Won
+            title:"Lost",
 
-          </p>
+            value:lostLeads
 
-          <h2 className="text-4xl font-bold">
+          }
 
-            {wonLeads}
+        ].map((item)=>(
 
-          </h2>
+          <div
 
-        </div>
+            key={item.title}
 
-        <div className="border rounded-xl p-6">
+            className="
 
-          <p>
+            bg-[#111111]
 
-            🔴 Lost
+            border
 
-          </p>
+            border-[#232323]
 
-          <h2 className="text-4xl font-bold">
+            rounded-3xl
 
-            {lostLeads}
+            p-6
 
-          </h2>
+            hover:border-[#60899B]
 
-        </div>
+            hover:-translate-y-1
+
+            transition-all
+
+            duration-300
+
+          "
+
+          >
+
+            <p>
+
+              {item.icon} {item.title}
+
+            </p>
+
+            <h2 className="text-4xl font-bold mt-4">
+
+              {item.value}
+
+            </h2>
+
+          </div>
+
+        ))}
 
       </div>
+
+      {/* AI Recommendations */}
+
+<div
+
+className="
+
+bg-[#111111]
+
+border
+
+border-[#232323]
+
+rounded-3xl
+
+p-8
+
+mt-10
+
+"
+
+>
+
+<h2
+
+className="
+
+text-2xl
+
+font-bold
+
+mb-6
+
+"
+
+>
+
+🤖 AI Recommendations
+
+</h2>
+
+<div className="space-y-4">
+
+{
+
+aiRecommendations.length===0
+
+? (
+
+<p>
+
+No recommendations
+
+</p>
+
+)
+
+:(
+
+aiRecommendations.map(
+
+(item,index)=>(
+
+<div
+
+key={index}
+
+className="
+
+border-b
+
+border-[#232323]
+
+pb-3
+
+"
+
+>
+
+{item}
+
+</div>
+
+)
+
+)
+
+)
+
+}
+
+</div>
+
+</div>
+
+      <div
+
+className="
+
+grid
+
+xl:grid-cols-2
+
+gap-8
+
+mt-10
+
+"
+
+>
+
+<div>
+
+<AICopilot
+/>
+
+</div>
+
+<div
+
+className="
+
+bg-[#111111]
+
+border
+
+border-[#232323]
+
+rounded-3xl
+
+p-8
+
+"
+
+>
+
+<h2
+
+className="
+
+text-2xl
+
+font-bold
+
+mb-6
+
+"
+
+>
+
+📋 Today's Tasks
+
+</h2>
+
+<div className="space-y-4">
+
+{
+
+tasks.length===0
+
+? (
+
+<p>
+
+🎉 No tasks today
+
+</p>
+
+)
+
+:(
+
+tasks.map(
+
+(task,index)=>(
+
+<div
+
+key={index}
+
+className="
+
+border-b
+
+border-[#232323]
+
+pb-3
+
+"
+
+>
+
+{task}
+
+</div>
+
+)
+
+)
+
+)
+
+}
+
+</div>
+
+</div>
+
+</div>
 
       {/* Chart + Recent Activity */}
 
       <div className="grid md:grid-cols-2 gap-8 mt-12">
 
-        <div className="border rounded-xl p-8">
+        <div
+
+          className="
+
+          bg-[#111111]
+
+          border
+
+          border-[#232323]
+
+          rounded-3xl
+
+          p-8
+
+        "
+
+        >
 
           <h2 className="text-2xl font-bold mb-6">
 
@@ -459,7 +1109,23 @@ const isPro =
 
         </div>
 
-        <div className="border rounded-xl p-8">
+        <div
+
+          className="
+
+          bg-[#111111]
+
+          border
+
+          border-[#232323]
+
+          rounded-3xl
+
+          p-8
+
+        "
+
+        >
 
           <h2 className="text-2xl font-bold mb-6">
 
@@ -469,59 +1135,177 @@ const isPro =
 
           <div className="space-y-4">
 
-  {
+            {
 
-    recentLeads.length === 0 ? (
+              recentLeads.length === 0
 
-      <p>
+              ? (
 
-        No recent activity
+                <p>
 
-      </p>
+                  No recent activity
 
-    ) : (
+                </p>
 
-      recentLeads.map(
+              )
 
-        (lead) => (
+              : (
 
-          <div
+                recentLeads.map(
 
-            key={lead.id}
+                  (lead) => (
 
-            className="border-b pb-3"
+                    <div
 
-          >
+                      key={lead.id}
 
-            <p className="font-bold">
+                      className="border-b border-[#232323] pb-4"
 
-              {lead.name}
+                    >
+
+                      <p className="font-bold">
+
+                        {lead.name}
+
+                      </p>
+
+                      <p>
+
+                        🏢 {lead.company}
+
+                      </p>
+
+                      <p>
+
+🟢 {lead.stage}
+
+</p>
+
+{
+
+lead.follow_up_date && (
+
+<p>
+
+📅
+
+{
+
+new Date(
+
+lead.follow_up_date
+
+).toLocaleDateString()
+
+}
+
+</p>
+
+)
+
+}
+
+                    </div>
+
+                  )
+
+                )
+
+              )
+
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Usage Counter */}
+
+      <div
+
+        className="
+
+        bg-[#111111]
+
+        border
+
+        border-[#232323]
+
+        rounded-3xl
+
+        p-8
+
+        mb-10
+
+      "
+
+      >
+
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-6">
+
+          <div>
+
+            <h2 className="text-2xl font-bold">
+
+              📦 {(profile?.plan || "free").toUpperCase()} PLAN
+
+            </h2>
+
+            <p className="text-gray-400 mt-3">
+
+              {totalLeads} / {leadLimit} leads used
 
             </p>
 
-            <p>
+            <p className="mt-2">
 
-              🏢 {lead.company}
-
-            </p>
-
-            <p>
-
-              🟢 {lead.stage}
+              {remainingLeads} leads remaining
 
             </p>
 
           </div>
 
-        )
+          {
 
-      )
+            !isPro && (
 
-    )
+              <Link
 
-  }
+                href="/upgrade"
 
-</div>
+                className="
+
+                bg-[#1C3E4E]
+
+                hover:bg-[#285C70]
+
+                hover:-translate-y-1
+
+                transition-all
+
+                duration-300
+
+                hover:shadow-2xl
+
+                px-5
+
+                py-3
+
+                rounded-2xl
+
+              "
+
+              >
+
+                🚀 Upgrade
+
+              </Link>
+
+            )
+
+          }
 
         </div>
 

@@ -9,6 +9,36 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
+    if (
+
+  !body.name ||
+
+  !body.email ||
+
+  !body.phone
+
+) {
+
+  return Response.json(
+
+    {
+
+      message:
+
+      "Name, Email and Phone are required",
+
+    },
+
+    {
+
+      status: 400,
+
+    }
+
+  );
+
+}
+
     const { userId } = await auth();
 
 if (!userId) {
@@ -151,7 +181,19 @@ Return ONLY valid JSON.
       const result =
         JSON.parse(cleaned);
 
-      aiScore = result.score || 5;
+      aiScore = Math.min(
+
+  10,
+
+  Math.max(
+
+    0,
+
+    result.score || 5
+
+  )
+
+);
 
       aiSummary =
         result.summary ||
@@ -172,21 +214,25 @@ Return ONLY valid JSON.
       .from("leads")
 
       .insert([
-  {
-    user_id: userId,
+{
+user_id: userId,
 
-    name: body.name,
+name: body.name,
 
-    email: body.email,
+email: body.email,
 
-    company: body.company,
+company: body.company,
 
-    status: "new",
+phone: body.phone,
 
-    ai_score: aiScore,
+status: "new",
 
-    ai_summary: aiSummary,
-  },
+stage: "new",
+
+ai_score: aiScore,
+
+ai_summary: aiSummary,
+},
 ])
       .select();
 
@@ -202,6 +248,42 @@ Return ONLY valid JSON.
       );
 
     }
+
+    try {
+
+  await supabase
+
+  .from("notifications")
+
+  .insert([
+
+    {
+
+      user_id: userId,
+
+      title: "New Lead",
+
+      message:
+
+        `${body.name} added successfully`,
+
+    },
+
+  ]);
+
+}
+
+catch(error){
+
+  console.log(
+
+    "Notification error:",
+
+    error
+
+  );
+
+}
 
     try {
 
@@ -225,6 +307,8 @@ Return ONLY valid JSON.
 
         <p><strong>Email:</strong> ${body.email}</p>
 
+        <p><strong>Phone:</strong> ${body.phone}</p>
+
         <p><strong>AI Score:</strong> ${aiScore}/10</p>
 
         <p><strong>AI Summary:</strong> ${aiSummary}</p>
@@ -246,6 +330,9 @@ Return ONLY valid JSON.
   );
 
 }
+
+console.log("LEAD CREATED:", data);
+
     return Response.json({
 
       message:

@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { auth } from "@clerk/nextjs/server";
 
+import { supabase } from "@/lib/supabase";
+
 export default async function SettingsPage() {
 
   const { userId } = await auth();
@@ -24,93 +26,333 @@ export default async function SettingsPage() {
 
   }
 
+  const { data: profile } = await supabase
+
+    .from("profiles")
+
+    .select("*")
+
+    .eq("user_id", userId)
+
+    .single();
+
+  const isPro =
+
+    profile?.plan === "pro";
+
   return (
 
-    <main className="min-h-screen p-10">
+    <main className="min-h-screen p-6 md:p-10">
 
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
 
-        <h1 className="text-5xl font-bold mb-10">
+        {/* Header */}
 
-          ⚙️ Settings
+        <div className="mb-12">
 
-        </h1>
+          <p className="text-[#60899B]">
 
-        <div className="space-y-6">
+            Account Preferences
 
-          <div className="border rounded-xl p-8">
+          </p>
 
-            <h2 className="text-2xl font-bold mb-4">
+          <h1
+
+className="
+
+text-5xl
+
+font-black
+
+bg-gradient-to-r
+
+from-[#F2EDEA]
+
+via-[#60899B]
+
+to-[#285C70]
+
+bg-clip-text
+
+text-transparent
+
+"
+
+>
+
+            ⚙️ Settings
+
+          </h1>
+
+        </div>
+
+        <div className="space-y-8">
+
+          {/* Account */}
+
+          <div
+
+            className="
+
+            bg-[#111111]
+
+            border
+
+            border-[#232323]
+
+            rounded-3xl
+
+            p-8
+
+            hover:border-[#285C70]
+
+transition-all
+
+duration-300
+
+hover:-translate-y-1
+
+          "
+
+          >
+
+            <h2 className="text-3xl font-bold mb-4">
 
               👤 Account
 
             </h2>
 
-            <p>
+            <p className="text-gray-400">
 
-              Manage your LeadsHijack AI account.
+              Manage your SalesPilotAI account.
 
             </p>
 
           </div>
 
-          <div className="border rounded-xl p-8">
+          {/* Plan */}
 
-            <h2 className="text-2xl font-bold mb-4">
+          <div
+
+            className="
+
+            bg-[#111111]
+
+            border
+
+            border-[#232323]
+
+            rounded-3xl
+
+            p-8
+
+            hover:border-[#285C70]
+
+transition-all
+
+duration-300
+
+hover:-translate-y-1
+
+          "
+
+          >
+
+            <h2 className="text-3xl font-bold mb-6">
 
               📦 Current Plan
 
             </h2>
 
-            <p>
+            <div className="flex justify-between items-center">
 
-  Dynamic plan information coming soon
+              <div>
 
-</p>
+                <p className="text-3xl font-bold">
 
-<p>
+                  {(profile?.plan || "free").toUpperCase()}
 
-  View your billing page for details
+                </p>
 
-</p>
+                <p className="text-gray-400 mt-3">
+
+                  {profile?.lead_limit || 5}
+
+                  {" "}lead limit
+
+                </p>
+
+              </div>
+
+              {
+
+                isPro && (
+
+                  <span
+
+                    className="
+
+                    bg-[#1C3E4E]
+
+text-[#F2EDEA]
+
+font-bold
+
+px-5
+
+py-2
+
+rounded-full
+
+                  "
+
+                  >
+
+                    ⭐ PRO
+
+                  </span>
+
+                )
+
+              }
+
+            </div>
 
           </div>
 
-          <div className="border rounded-xl p-8">
+          {/* Upgrade */}
 
-            <h2 className="text-2xl font-bold mb-4">
+          {
 
-              💳 Billing & Upgrade
+            !isPro && (
+
+              <div
+
+                className="
+
+                bg-[#111111]
+
+                border
+
+                border-[#232323]
+
+                rounded-3xl
+
+                p-8
+
+                hover:border-[#285C70]
+
+transition-all
+
+duration-300
+
+hover:-translate-y-1
+
+              "
+
+              >
+
+                <h2 className="text-3xl font-bold mb-6">
+
+                  🚀 Upgrade
+
+                </h2>
+
+                <Link
+
+                  href="/upgrade"
+
+                  className="
+
+                  bg-[#1C3E4E]
+
+hover:bg-[#285C70]
+
+hover:-translate-y-1
+
+hover:shadow-2xl
+
+transition-all
+
+duration-300
+
+px-8
+
+py-4
+
+rounded-2xl
+
+inline-block
+
+                "
+
+                >
+
+                  View Plans
+
+                </Link>
+
+              </div>
+
+            )
+
+          }
+
+          {/* System */}
+
+          <div
+
+            className="
+
+            bg-[#111111]
+
+            border
+
+            border-[#232323]
+
+            rounded-3xl
+
+            p-8
+
+            hover:border-[#285C70]
+
+transition-all
+
+duration-300
+
+hover:-translate-y-1
+
+          "
+
+          >
+
+            <h2 className="text-3xl font-bold mb-6">
+
+              🛡️ System
 
             </h2>
 
-            <div className="flex gap-4">
+            <div className="space-y-3">
 
-  <Link
+              <p>
 
-    href="/upgrade"
+                🟢 Clerk Authentication
 
-    className="border px-6 py-3 rounded inline-block"
+              </p>
 
-  >
+              <p>
 
-    View Plans
+                🟢 Supabase Connected
 
-  </Link>
+              </p>
 
-  <Link
+              <p>
 
-    href="/billing"
+                🟢 AI Lead Scoring Enabled
 
-    className="border px-6 py-3 rounded inline-block"
+              </p>
 
-  >
-
-    💳 Billing
-
-  </Link>
-
-</div>
+            </div>
 
           </div>
 

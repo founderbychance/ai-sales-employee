@@ -60,7 +60,7 @@ export default function PayButton() {
 
         name:
 
-          "LeadsHijack AI",
+          "SalesPilotAI",
 
         description:
 
@@ -84,7 +84,7 @@ export default function PayButton() {
 
           product:
 
-            "LeadsHijack AI Pro",
+            "SalesPilotAI Pro",
 
         },
 

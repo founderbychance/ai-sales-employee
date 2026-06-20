@@ -2,195 +2,493 @@
 
 import { useState } from "react";
 
+import NotificationBar from "@/components/NotificationBar";
+
 export default function LeadForm() {
 
   const [name, setName] = useState("");
 
   const [email, setEmail] = useState("");
 
-const [company, setCompany] = useState("");
+  const [company, setCompany] = useState("");
 
-const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [showNotification, setShowNotification] =
+
+    useState(false);
+
+  const [notificationMessage, setNotificationMessage] =
+
+    useState("");
+
+  const [notificationType, setNotificationType] =
+
+    useState<
+
+      "success" |
+
+      "error" |
+
+      "info"
+
+    >("info");
 
   async function handleSubmit(
-  e: React.FormEvent
+
+    e: React.FormEvent
+
+  ) {
+
+    try {
+
+      e.preventDefault();
+
+      if (loading) return;
+
+      setLoading(true);
+
+      const response = await fetch(
+
+        "/api/leads",
+
+        {
+
+          method: "POST",
+
+          headers: {
+
+            "Content-Type":
+
+              "application/json",
+
+          },
+
+          body: JSON.stringify({
+
+  name,
+
+  email,
+
+  company,
+
+  phone,
+
+}),
+          
+
+        }
+
+      );
+
+      const data =
+
+        await response.json();
+
+        if (
+
+  !response.ok &&
+
+  response.status !== 403
+
 ) {
 
-  try {
+  setNotificationType(
 
-    e.preventDefault();
+    "error"
 
-    if (loading) return;
+  );
 
-    setLoading(true);
+  setNotificationMessage(
 
-    const response = await fetch(
+    data.message ||
 
-      "/api/leads",
+    "Something went wrong"
 
-      {
+  );
 
-        method: "POST",
+  setShowNotification(
 
-        headers: {
+    true
 
-          "Content-Type":
-
-            "application/json",
-
-        },
-
-        body: JSON.stringify({
-
-          name,
-
-          email,
-
-          company,
-
-        }),
-
-      }
-
-    );
-
-    const data =
-
-      await response.json();
-
-    if (response.status === 403) {
-
-      const shouldUpgrade =
-
-        confirm(
-
-          "🚫 You have reached your free plan limit.\n\nGo to the Upgrade page?"
-
-        );
-
-      if (shouldUpgrade) {
-
-        window.location.href =
-
-          "/upgrade";
-
-      }
-
-      setLoading(false);
-
-return;
-
-    }
-
-    alert(data.message);
-
-setName("");
-
-setEmail("");
-
-setCompany("");
-
-setLoading(false);
-
-} catch (error) {
-
-  console.log(error);
-
-  alert("Something went wrong");
+  );
 
   setLoading(false);
 
-}
+  return;
 
 }
 
-  return (
+      if (response.status === 403) {
 
-    <form
+        setNotificationType(
 
-      onSubmit={handleSubmit}
+          "error"
 
-      className="flex flex-col gap-4 w-full max-w-md"
+        );
 
-    >
+        setNotificationMessage(
 
-      <input
+          "🚫 Free plan limit reached. Redirecting..."
 
-        className="border p-3 rounded"
+        );
 
-        placeholder="Name"
+        setShowNotification(
 
-        value={name}
+          true
 
-        onChange={(e) =>
+        );
 
-          setName(e.target.value)
+        setLoading(false);
 
-        }
+        setTimeout(() => {
 
-        required
+          window.location.href =
 
-      />
+            "/upgrade";
 
-      <input
+        }, 2000);
 
-        className="border p-3 rounded"
+        return;
 
-        placeholder="Email"
+      }
 
-        type="email"
+      setNotificationType(
 
-        value={email}
+        "success"
 
-        onChange={(e) =>
+      );
 
-          setEmail(e.target.value)
+      setNotificationMessage(
 
-        }
+        "✅ Lead created successfully"
 
-        required
+      );
 
-      />
+      setShowNotification(
 
-      <input
+        true
 
-        className="border p-3 rounded"
+      );
 
-        placeholder="Company"
+      setName("");
 
-        value={company}
+      setEmail("");
 
-        onChange={(e) =>
+      setCompany("");
 
-          setCompany(e.target.value)
+      setPhone("");
 
-        }
+      setLoading(false);
 
-      />
+    }
 
-      <button
+    catch (error) {
 
-  className="bg-black text-white p-3 rounded disabled:opacity-50"
+      console.log(error);
 
-  type="submit"
+      setNotificationType(
 
-  disabled={loading}
+        "error"
 
->
+      );
 
-  {
+      setNotificationMessage(
 
-    loading
+        "❌ Something went wrong"
 
-      ? "Submitting..."
+      );
 
-      : "Submit"
+      setShowNotification(
+
+        true
+
+      );
+
+      setLoading(false);
+
+    }
 
   }
 
-</button>
+  return (
 
-    </form>
+    <>
+
+      <NotificationBar
+
+        show={showNotification}
+
+        message={notificationMessage}
+
+        type={notificationType}
+
+        onClose={() =>
+
+          setShowNotification(
+
+            false
+
+          )
+
+        }
+
+      />
+
+      <form
+
+        onSubmit={handleSubmit}
+
+        className="flex flex-col gap-5 w-full max-w-xl"
+
+      >
+
+        <input
+
+          className="
+
+border
+
+border-[#353535]
+
+bg-[#111111]
+
+text-white
+
+p-4
+
+rounded-2xl
+
+outline-none
+
+focus:border-[#60899B]
+
+focus:ring-2
+
+focus:ring-[#285C70]/40
+
+transition-all
+
+duration-300
+
+"
+
+          placeholder="Name"
+
+          value={name}
+
+          onChange={(e) =>
+
+            setName(
+
+              e.target.value
+
+            )
+
+          }
+
+          required
+
+        />
+
+        <input
+
+          className="
+
+border
+
+border-[#353535]
+
+bg-[#111111]
+
+text-white
+
+p-4
+
+rounded-2xl
+
+outline-none
+
+focus:border-[#60899B]
+
+focus:ring-2
+
+focus:ring-[#285C70]/40
+
+transition-all
+
+duration-300
+
+"
+
+          placeholder="Email"
+
+          type="email"
+
+          value={email}
+
+          onChange={(e) =>
+
+            setEmail(
+
+              e.target.value
+
+            )
+
+          }
+
+          required
+
+        />
+
+        <input
+
+          className="
+
+border
+
+border-[#353535]
+
+bg-[#111111]
+
+text-white
+
+p-4
+
+rounded-2xl
+
+outline-none
+
+focus:border-[#60899B]
+
+focus:ring-2
+
+focus:ring-[#285C70]/40
+
+transition-all
+
+duration-300
+
+"
+
+          placeholder="Company"
+
+          value={company}
+
+          onChange={(e) =>
+
+            setCompany(
+
+              e.target.value
+
+            )
+
+          }
+
+        />
+
+        <input
+
+className="
+
+border
+
+border-[#353535]
+
+bg-[#111111]
+
+text-white
+
+p-4
+
+rounded-2xl
+
+outline-none
+
+focus:border-[#60899B]
+
+focus:ring-2
+
+focus:ring-[#285C70]/40
+
+transition-all
+
+duration-300
+
+"
+
+placeholder="📞 Phone Number"
+
+type="tel"
+
+pattern="^\+?[0-9]{10,15}$"
+
+value={phone}
+
+onChange={(e) =>
+
+  setPhone(
+
+    e.target.value
+
+  )
+
+}
+
+required
+
+/>
+
+        <button
+
+          className="
+
+bg-[#1C3E4E]
+
+hover:bg-[#285C70]
+
+hover:-translate-y-1
+
+hover:shadow-2xl
+
+transition-all
+
+duration-300
+
+text-white
+
+font-semibold
+
+p-4
+
+rounded-2xl
+
+disabled:opacity-50
+
+"
+
+          type="submit"
+
+          disabled={loading}
+
+        >
+
+          {
+
+            loading
+
+? "⏳ Creating Lead..."
+
+: "🚀 Create Lead"
+          }
+
+        </button>
+
+      </form>
+
+    </>
 
   );
 
